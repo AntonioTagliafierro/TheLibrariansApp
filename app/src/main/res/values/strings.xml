@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">TheLibrariansApp</string>
+
+
+    <string-array name="genere_array">
+        <item>Seleziona un genere</item>
+        <item>Fantascienza</item>
+        <item>Giallo</item>
+        <item>Fantasy</item>
+        <item>Commedia</item>
+        <!-- Aggiungi altri generi se necessario -->
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

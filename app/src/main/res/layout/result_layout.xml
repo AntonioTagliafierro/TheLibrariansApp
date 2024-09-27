@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp">
+
+
+    <ImageView
+        android:id="@+id/bookImg"
+        android:layout_width="@dimen/cover_width_dimen"
+        android:layout_height="@dimen/cover_height_dimen"
+        android:foreground="?attr/selectableItemBackground"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bookTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:cursorVisible="false"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Libro title"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/label_dimen"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bookImg"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bookQuantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:cursorVisible="false"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:text="Quantita'"
+        android:textAlignment="center"
+        android:textColor="@color/grey"
+        android:textSize="@dimen/label_dimen"
+        app:layout_constraintBottom_toTopOf="@+id/showBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bookImg"
+        app:layout_constraintTop_toBottomOf="@+id/bookTitle" />
+
+    <TextView
+        android:id="@+id/showBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:cursorVisible="false"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="mostra_btn"
+        android:textAlignment="center"
+        android:textColor="@color/navy"
+        android:textSize="@dimen/label_dimen"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/bookImg"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookImg" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
