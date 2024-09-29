@@ -17,8 +17,107 @@ void send_books_from_db(PGconn *conn, int sock);
 void send_books_from_db_key_genre(PGconn *conn, int sock, const char *field1, const char *field2);
 void send_books_from_db_key(PGconn *conn, int sock, const char *field1);
 void send_books_from_db_genre(PGconn *conn, int sock, const char *field1);
+void add_to_bag(PGconn *conn, int sock, const char *username, const char *isbn);
+void rem_to_bag(PGconn *conn, int sock, const char *username, const char *isbn);
+void books_from_bag(PGconn *conn, int sock, const char *username);
+
+//funzione per recuperare i libri dal carrello
+void books_from_bag(PGconn *conn, int sock, const char *username) {
+    // Connessione a PostgreSQL
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+
+        return;
+    }
+
+    // Esegui la query per prendere i dettagli dei libri
+    char query[BUFFER_SIZE];
+    snprintf(query, sizeof(query), "SELECT b.isbn, b.titolo, b.genere, b.imageUrl, b.autore, b.quantita, b.copieprestate "
+        "FROM books b "
+        "JOIN bag ba ON b.isbn = ba.isbn "
+        "WHERE ba.username = '%s';", username);
+    PGresult *res = PQexec(conn, query);
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
+        PQclear(res);
+
+        return;
+    }
+
+    int rows = PQntuples(res);
+    char buffer[1024];
+    
+    // Itera sui risultati e invia i dati di ogni libro
+    for (int i = 0; i < rows; i++) {
+        snprintf(buffer, sizeof(buffer), "%s,%s,%s,%s,%s,%s,%s\n", 
+                 PQgetvalue(res, i, 0),  // isbn
+                 PQgetvalue(res, i, 1),  // titolo
+                 PQgetvalue(res, i, 2),  // genere
+                 PQgetvalue(res, i, 3),  // imageUrl
+                 PQgetvalue(res, i, 4),  // autore
+                 PQgetvalue(res, i, 5),  // quantita
+                 PQgetvalue(res, i, 6)); // copieprestate
+
+        send(sock, buffer, strlen(buffer), 0);
+    }
+
+    // Invia segnale di fine ("END")
+    send(sock, "END\n", 4, 0);
+
+    PQclear(res);
+
+}
 
 
+//funzione per rimuovere dal carrello
+void add_to_bag(PGconn *conn, int sock, const char *username, const char *isbn){
+
+    printf("Richiesta di rimozione ricevuta per l'utente: %s, ISBN: %s\n", username, isbn);
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Errore connessione al database: %s\n", PQerrorMessage(conn));
+        PQfinish(conn);
+        return;
+    }
+
+    char query[BUFFER_SIZE];
+    snprintf(query, sizeof(query), "DELETE FROM bag WHERE username = '%s' AND isbn = '%s';", username, isbn);
+    PGresult *res = PQexec(conn, query);
+
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        fprintf(stderr, "Errore durante la rimozione dal database: %s\n", PQerrorMessage(conn));
+    } else {
+        printf("Rimosso libro: %s per l'utente: %s\n", isbn, username);
+    }
+
+    PQclear(res);
+
+
+}
+
+//funzione per aggiungere al carrello
+void add_to_bag(PGconn *conn, int sock, const char *username, const char *isbn){
+
+    printf("Richiesta di registrazione ricevuta per l'utente: %s\n", username);
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Errore connessione al database: %s\n", PQerrorMessage(conn));
+        PQfinish(conn);
+        return;
+    }
+
+    char query[BUFFER_SIZE];
+    snprintf(query, sizeof(query), "INSERT INTO bag (username, isbn) VALUES ('%s', '%s');", username, isbn);
+    PGresult *res = PQexec(conn, query);
+
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        fprintf(stderr, "Errore durante l'inserimento nel database: %s\n", PQerrorMessage(conn));
+    } else {
+        printf("Aggiunto libro:%s  per l'utente: %s\n",isbn, username);
+    }
+
+    PQclear(res);
+
+
+}
 // Funzione per gestire la registrazione
 void handle_register(PGconn *conn,const char *username, const char *password) {
     printf("Richiesta di registrazione ricevuta per l'utente: %s\n", username);
@@ -305,9 +404,23 @@ void *handle_client(void *socket_desc) {
                 //libri solo keyword
                 send_books_from_db_key(conn, sock, field1);
             } else if (strcmp(request_type, "onlygenre") == 0){
-                //libri sono genere
+                //libri solo genere
                 send_books_from_db_genre(conn, sock, field1);
-            } else {
+            } else if (strcmp(request_type, "aggiungialcarrello") == 0) {
+                //aggiunge libro al carrello utente
+                add_to_bag(conn, sock, field1, field2);
+                char *response = "Aggiunto libro:%s  per l'utente: %s\n",field1, field2;
+                send(sock, response, strlen(response), 0);
+            } else if (strcmp(request_type, "rimuovidalcarrello") == 0){
+                //aggiunge libro al carrello utente
+                rem_to_bag(conn, sock, field1, field2);
+                char *response = "Rimosso libro:%s  per l'utente: %s\n",field1, field2;
+                send(sock, response, strlen(response), 0);
+            } else if (strcmp(request_type, "bagbooks") == 0){
+                //recupera libri dal carrello dell'utente
+                books_from_bag(conn, sock, field1);
+            }
+            else {
 
                 char *response = "Tipo di richiesta non valido.";
                 send(sock, response, strlen(response), 0);
