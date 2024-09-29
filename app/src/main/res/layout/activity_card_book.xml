@@ -7,10 +7,10 @@
     android:layout_margin="8dp"
     android:background="@drawable/cardbook"
     android:elevation="3dp"
-    >
+    tools:context="com.project.thelibrarians_lso2324.activities.HomePageActivity">
 
     <ImageView
-        android:id="@+id/bookImg"
+        android:id="@+id/imageViewCopertinaLibroCardBook"
         android:layout_width="179dp"
         android:layout_height="166dp"
         android:layout_marginTop="12dp"
@@ -21,7 +21,7 @@
         app:srcCompat="@mipmap/ic_launcher" />
 
     <TextView
-        android:id="@+id/bookGenre"
+        android:id="@+id/textViewCategory"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginStart="8dp"
@@ -35,10 +35,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookImg" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewCopertinaLibroCardBook" />
 
     <TextView
-        android:id="@+id/bookTitle"
+        android:id="@+id/textViewtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="90dp"
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toTopOf="@+id/textView14" />
 
     <TextView
-        android:id="@+id/bookAuthor"
+        android:id="@+id/textViewAuthorCardBook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="90dp"
@@ -66,11 +66,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewtitle"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/bookIsbn"
+        android:id="@+id/textViewISBNCardBook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="90dp"
@@ -82,9 +82,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookAuthor" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAuthorCardBook" />
 
-        <TextView
+    <TextView
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookGenre" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewCategory" />
 
     <TextView
         android:id="@+id/textView15"
