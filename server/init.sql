@@ -39,6 +39,13 @@ CREATE TABLE IF NOT EXISTS books (
     copieprestate INTEGER NOT NULL
 );
 
+-- Creazione Carrello
+
+CREATE TABLE IF NOT EXISTS bag (
+    username VARCHAR(255) NOT NULL,
+    isbn VARCHAR(20)
+);
+
 
 INSERT INTO users (username, password) VALUES ('admin', 'admin');
 
