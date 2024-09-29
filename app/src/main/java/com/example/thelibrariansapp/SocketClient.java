@@ -276,7 +276,7 @@ public class SocketClient {
 
             // Invia i dati al server
             outputStream = new DataOutputStream(socket.getOutputStream());
-            String getbooks = type + ":" + username "\n";  // Indica il tipo di richiesta
+            String getbooks = type + ":" + username + "\n";  // Indica il tipo di richiesta
             OutputStream os = socket.getOutputStream();
             os.write(getbooks.getBytes());
             outputStream.flush();
