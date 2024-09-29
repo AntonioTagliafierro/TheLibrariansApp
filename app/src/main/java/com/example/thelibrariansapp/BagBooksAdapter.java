@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ public class BagBooksAdapter extends RecyclerView.Adapter<BagBooksAdapter.MyView
 
     private Context context;
     private ArrayList<Book> books;
+
 
     // Corretto il costruttore
     public BagBooksAdapter(ArrayList<Book> listBook, Context context) {
@@ -77,6 +80,7 @@ public class BagBooksAdapter extends RecyclerView.Adapter<BagBooksAdapter.MyView
 
         public TextView bookTitle, bookIsbn, bookAuthor, bookGenre;
         public ImageView bookImg;
+        public ImageButton rimuoviBtn;
 
 
         public MyViewHolder(View itemView) {
@@ -86,6 +90,7 @@ public class BagBooksAdapter extends RecyclerView.Adapter<BagBooksAdapter.MyView
             bookIsbn = itemView.findViewById(R.id.bookIsbn);
             bookGenre = itemView.findViewById(R.id.bookGenre);
             bookImg = itemView.findViewById(R.id.bookImg);
+
 
         }
 
@@ -100,5 +105,8 @@ public class BagBooksAdapter extends RecyclerView.Adapter<BagBooksAdapter.MyView
                 Glide.with(context).load(book.getImageUrl()).transform(new GranularRoundedCorners(30,30,0,0)).into(bookImg);
             }
         }
+
+
+
     }
 }
