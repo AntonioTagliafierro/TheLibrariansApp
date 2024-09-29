@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class CarrelloActivity extends AppCompatActivity {
 
     private RecyclerView books; // RecyclerView per mostrare i libri nel carrello
-    private BookAdapter bookAdapter; // Adapter per la RecyclerView
+    private BagBooksAdapter bookAdapter; // Adapter per la RecyclerView
     private Button ordinaBtn; // Bottone per ordinare i libri
     ArrayList<Book> bookList; // Lista di libri nel carrello
     private SharedPreferences sharedPreferences; // SharedPreferences per recuperare lo username
@@ -37,6 +37,11 @@ public class CarrelloActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         username = sharedPreferences.getString("username", "default_value");
 
+        bookList = CartManager.getInstance().getBookList();
+        sizeCarrello = bookList.size();
+
+        bookAdapter = new BagBooksAdapter(bookList, CarrelloActivity.this);
+        books.setAdapter(bookAdapter);
         ordinaBtn = findViewById(R.id.orderBtn); // Inizializza il bottone ordina
         books = findViewById(R.id.booksRecyclerView); // Inizializza la RecyclerView
 
@@ -57,16 +62,18 @@ public class CarrelloActivity extends AppCompatActivity {
             @Override
             public void run() {
                 SocketClient client = new SocketClient();
-                bookList = client.getBagBooks("bagbooks", username); // Ottieni i libri nel carrello
+                ArrayList<Book> serverBooks = client.getBagBooks("bagbooks", username); // Ottieni i libri nel carrello
 
                 // Aggiorna l'interfaccia utente dopo aver ottenuto i libri
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (bookList != null && !bookList.isEmpty()) {
-                            sizeCarrello = bookList.size(); // Ottieni la dimensione del carrello
-                            bookAdapter = new BookAdapter(bookList, CarrelloActivity.this); // Inizializza l'adapter
-                            books.setAdapter(bookAdapter); // Imposta l'adapter alla RecyclerView
+                            bookList.addAll(serverBooks);
+                            sizeCarrello = bookList.size();
+
+                            // Inizializza l'adapter
+                            bookAdapter.updateBooks(bookList);
                         } else {
                             Toast.makeText(CarrelloActivity.this, "Carrello vuoto", Toast.LENGTH_SHORT).show();
                         }
@@ -90,7 +97,7 @@ public class CarrelloActivity extends AppCompatActivity {
                             // Per ogni libro nel carrello, invia un ordine
                             for (Book book : bookList) {
                                 if (book.getAvailable() > 0) {
-                                    String response = client.orderBook("ordina", username, book.getIsbn());
+                                    String response = client.bookTODB("ordina", username, book.getIsbn());
 
                                     // Gestisci la risposta nel thread principale
                                     runOnUiThread(() -> {

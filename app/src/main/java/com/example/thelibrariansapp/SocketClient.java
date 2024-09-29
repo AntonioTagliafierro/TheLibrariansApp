@@ -327,7 +327,7 @@ public class SocketClient {
         return books;  // Restituisci la lista di libri
     }
 
-    public String orderBook(String type, String username, String isbn) {
+    public String bookTODB(String type, String username, String isbn) {
 
 
         Socket socket = null;
@@ -376,4 +376,6 @@ public class SocketClient {
 
 
     }
+
+
 }
