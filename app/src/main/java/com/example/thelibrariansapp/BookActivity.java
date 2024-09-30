@@ -43,6 +43,7 @@ public class BookActivity extends AppCompatActivity {
         bookAuthor = findViewById(R.id.bookAuthor);
         bookQuantita = findViewById(R.id.bookQuantity);
         isbnBook = findViewById(R.id.isbnBook);
+        aggiungiBtn = findViewById(R.id.aggiungiBtn);
 
 
 
@@ -75,8 +76,6 @@ public class BookActivity extends AppCompatActivity {
             aggiungiBtn.setActivated(true);
             aggiungiBtn.setText("Aggiungi al carrello");
         }
-        // In un'Activity o Fragment dove visualizzi un singolo libro
-        Button aggiungiBtn = findViewById(R.id.aggiungiBtn);
 
         // Inizializzazione SharedPreferences per recuperare lo username
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);

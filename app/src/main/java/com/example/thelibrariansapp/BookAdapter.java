@@ -97,7 +97,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> 
             if (book.getImageUrl() == null) {
                 bookImg.setImageResource(R.drawable.ic_launcher_background);
             } else {
-                Glide.with(context).load(book.getImageUrl()).transform(new GranularRoundedCorners(30,30,0,0)).into(bookImg);
+                Glide.with(context).load(book.getImageUrl()).fitCenter().transform(new GranularRoundedCorners(30,30,0,0)).into(bookImg);
             }
         }
     }
