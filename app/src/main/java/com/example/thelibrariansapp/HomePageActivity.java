@@ -10,13 +10,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.thelibrariansapp.models.Book;
+
 import java.util.ArrayList;
 public class  HomePageActivity extends AppCompatActivity {
+
     private RecyclerView.Adapter adapterRecommended;
     private  RecyclerView recyclerViewBooks;
     private ImageButton exit;
 
     private EditText searchbar;
+
+    private ArrayList<Book> ItemsBooks = new ArrayList<>();
+
+    private SocketClient socketClient = new SocketClient();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -24,8 +32,13 @@ public class  HomePageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adminhomepage);
 
+
+        //Get the books from the server
+        ItemsBooks = socketClient.getAllBooks("allbooks");
+
+
         //Add element in the recycler view
-        initRecyclerview();
+        initRecyclerview(ItemsBooks);
 
         //Exit button
         exit = findViewById(R.id.Exit_button);
@@ -57,31 +70,7 @@ public class  HomePageActivity extends AppCompatActivity {
         });
     }
 
-    private void initRecyclerview() {
-        ArrayList<CardBookPropertyDomain> itemsBooks = new ArrayList<>();
-        itemsBooks.add(new CardBookPropertyDomain("Il bosco di nebbia","Gabriella Genisi","AQ23457789087","Thriller","pic1",25,5,3));
-        itemsBooks.add(new CardBookPropertyDomain("La principessa Angina","Roland Tapor","9788899729554","Historical novel","pic2",5,3,1));
-        itemsBooks.add(new CardBookPropertyDomain("The power of balance ","William R.Torbert","080394067X","Economic management","pic3",5,3,2));
-        itemsBooks.add(new CardBookPropertyDomain("Il bosco di nebbia","Gabriella Genisi","AQ23457789087","Thriller","pic1",25,5,3));
-        itemsBooks.add(new CardBookPropertyDomain("La principessa Angina","Roland Tapor","9788899729554","Historical novel","pic2",5,3,1));
-        itemsBooks.add(new CardBookPropertyDomain("The power of balance ","William R.Torbert","080394067X","Economic management","pic3",5,3,2));
-        itemsBooks.add(new CardBookPropertyDomain("Il bosco di nebbia","Gabriella Genisi","AQ23457789087","Thriller","pic1",25,5,3));
-        itemsBooks.add(new CardBookPropertyDomain("La principessa Angina","Roland Tapor","9788899729554","Historical novel","pic2",5,3,1));
-        itemsBooks.add(new CardBookPropertyDomain("The power of balance ","William R.Torbert","080394067X","Economic management","pic3",5,3,2));
-        itemsBooks.add(new CardBookPropertyDomain("Il bosco di nebbia","Gabriella Genisi","AQ23457789087","Thriller","pic1",25,5,3));
-        itemsBooks.add(new CardBookPropertyDomain("La principessa Angina","Roland Tapor","9788899729554","Historical novel","pic2",5,3,1));
-        itemsBooks.add(new CardBookPropertyDomain("The power of balance ","William R.Torbert","080394067X","Economic management","pic3",5,3,2));
-        itemsBooks.add(new CardBookPropertyDomain("Il bosco di nebbia","Gabriella Genisi","AQ23457789087","Thriller","pic1",25,5,3));
-        itemsBooks.add(new CardBookPropertyDomain("La principessa Angina","Roland Tapor","9788899729554","Historical novel","pic2",5,3,1));
-        itemsBooks.add(new CardBookPropertyDomain("The power of balance ","William R.Torbert","080394067X","Economic management","pic3",5,3,2));
-        itemsBooks.add(new CardBookPropertyDomain("Il bosco di nebbia","Gabriella Genisi","AQ23457789087","Thriller","pic1",25,5,3));
-        itemsBooks.add(new CardBookPropertyDomain("La principessa Angina","Roland Tapor","9788899729554","Historical novel","pic2",5,3,1));
-        itemsBooks.add(new CardBookPropertyDomain("The power of balance ","William R.Torbert","080394067X","Economic management","pic3",5,3,2));
-        itemsBooks.add(new CardBookPropertyDomain("Il bosco di nebbia","Gabriella Genisi","AQ23457789087","Thriller","pic1",25,5,3));
-        itemsBooks.add(new CardBookPropertyDomain("La principessa Angina","Roland Tapor","9788899729554","Historical novel","pic2",5,3,1));
-        itemsBooks.add(new CardBookPropertyDomain("The power of balance ","William R.Torbert","080394067X","Economic management","pic3",5,3,2));
-
-
+    private void initRecyclerview(ArrayList<Book> itemsBooks) {
         recyclerViewBooks= findViewById(R.id.recyclerViewBooks);
         recyclerViewBooks.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         adapterRecommended = new RecommendedBookAdapter(itemsBooks);
