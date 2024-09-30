@@ -770,7 +770,7 @@ void send_books_from_db_key_genre(PGconn *conn, int sock, const char *field1, co
     snprintf(query, sizeof(query), 
     "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE titolo LIKE '%%%s%%' AND genere = '%s'", 
     field1, field2);
-    PGresult *res = PQexec(conn, "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books");
+    PGresult *res = PQexec(conn, query);    
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
         PQclear(res);

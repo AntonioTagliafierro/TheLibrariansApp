@@ -90,8 +90,8 @@ INSERT INTO books (isbn, titolo, genere, imageUrl, autore, quantita, copiepresta
     ('9780374528379', 'The Brothers Karamazov', 'romanzo', 'https://covers.openlibrary.org/b/id/10736021-M.jpg', 'Fyodor Dostoevsky', 6, 0),
     ('9780141439846', 'Dracula', 'horror', 'https://covers.openlibrary.org/b/id/12333446-M.jpg', 'Bram Stoker', 11, 0),
     ('9780785164036', 'Deadpool Kills The Marvel Universe', 'fumetto', 'https://covers.openlibrary.org/b/id/7690266-M.jpg', 'Dalibor Talajic', 6, 0),
-    ('9780785164036', 'Deadpool Kills The Classic', 'fumetto', 'https://covers.openlibrary.org/b/id/7696420-M.jpg', 'Cullen Bunn', 3, 0),
-    ('9780785164036', 'Deadpool Kills Deadpool', 'fumetto', 'https://covers.openlibrary.org/b/id/7627228-M.jpg', 'Cullen Bunn', 8, 0);
+    ('9788891217301', 'Deadpool Kills The Classic', 'fumetto', 'https://covers.openlibrary.org/b/id/7696420-M.jpg', 'Cullen Bunn', 3, 0),
+    ('9780785184935', 'Deadpool Kills Deadpool', 'fumetto', 'https://covers.openlibrary.org/b/id/7627228-M.jpg', 'Cullen Bunn', 8, 0);
 
     
     
