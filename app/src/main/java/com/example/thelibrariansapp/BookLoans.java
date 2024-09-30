@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.thelibrariansapp.models.Book;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -21,7 +23,7 @@ public class BookLoans extends AppCompatActivity {
     private TextView textViewTitle, textViewAuthor,textViewCategory,textViewTotalCopies,
     textViewCopiesInUse,textViewISBN;
     private ImageView ImageViewCopertinaLibro;
-    private CardBookPropertyDomain object;
+    private Book object;
 
     private RecyclerView.Adapter adapterRecommended;
     private  RecyclerView recyclerViewLoans;
@@ -71,15 +73,15 @@ public class BookLoans extends AppCompatActivity {
     }
 
     private void getBundle() {
-        object = (CardBookPropertyDomain) getIntent().getSerializableExtra("object");
+        object = (Book) getIntent().getSerializableExtra("object");
         int drawableResourceId = this.getResources().getIdentifier(object.getImageUrl(), "drawable", this.getPackageName());
             Glide.with(this).load(drawableResourceId).into(ImageViewCopertinaLibro);
 
             textViewTitle.setText(object.getTitle());
             textViewAuthor.setText(object.getAuthor());
-            textViewCategory.setText(object.getCategory());
-            textViewTotalCopies.setText(String.valueOf(object.getTotalCopies()));
-            textViewCopiesInUse.setText(String.valueOf(object.getCopiesInUse()));
+            textViewCategory.setText(object.getGenre());
+            textViewTotalCopies.setText(String.valueOf(object.getQuantity()));
+            textViewCopiesInUse.setText(String.valueOf(object.getCopyOnLease()));
         }
 
     private void initView() {

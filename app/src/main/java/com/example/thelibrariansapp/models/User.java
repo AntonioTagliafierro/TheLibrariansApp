@@ -1,6 +1,7 @@
 package com.example.thelibrariansapp.models;
 
 public class User {
+
     public String getUsername() {
         return username;
     }
@@ -21,6 +22,11 @@ public class User {
         this.password = password;
         this.username = username;
     }
+
+    public User( String username) {
+        this.username = username;
+    }
+
 
     private String username;
     private String password;

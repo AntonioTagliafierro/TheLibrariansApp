@@ -15,16 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.example.thelibrariansapp.models.Book;
+
 import java.util.ArrayList;
 
 
 
 public class RecommendedBookAdapter extends RecyclerView.Adapter<RecommendedBookAdapter.Viewholder> {
 
-    ArrayList<CardBookPropertyDomain> items;
+    ArrayList<Book> items;
     Context context;
 
-    public RecommendedBookAdapter(ArrayList<CardBookPropertyDomain> items) {
+    public RecommendedBookAdapter(ArrayList<Book> items) {
         this.items = items;
     }
 
@@ -38,10 +40,15 @@ public class RecommendedBookAdapter extends RecyclerView.Adapter<RecommendedBook
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, @SuppressLint("RecyclerView") int position) {
-        holder.TextCategory.setText(items.get(position).getCategory());
+        holder.TextCategory.setText(items.get(position).getGenre());
         holder.TextTitle.setText(items.get(position).getTitle());
         holder.TextAuthor.setText(items.get(position).getAuthor());
-        holder.TextISBN.setText(items.get(position).getISBN());
+        holder.TextISBN.setText(items.get(position).getIsbn());
+
+        System.out.println(items.get(position).getGenre());
+        System.out.println(items.get(position).getTitle());
+        System.out.println(items.get(position).getAuthor());
+        System.out.println(items.get(position).getIsbn());
 
 
         int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getImageUrl(),
