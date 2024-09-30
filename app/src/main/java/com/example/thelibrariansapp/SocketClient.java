@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 public class SocketClient {
-    private static final String SERVER_IP = "34.46.31.111"; // Sostituisci con l'indirizzo IP del server
+    private static final String SERVER_IP = "35.192.39.236"; // Sostituisci con l'indirizzo IP del server
     private static final int SERVER_PORT = 8080; // Porta del server
 
     public String sendCredentials(String type, String username, String password) {

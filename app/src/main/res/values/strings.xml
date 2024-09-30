@@ -23,6 +23,8 @@
         <item>fantasy</item>
         <item>storico</item>
         <item>avventura</item>
+        <item>drammatico</item>
+        <item>mistery</item>
     </string-array>
 
     <string name="seleziona_genere_prompt">Seleziona un genere</string>
