@@ -1,6 +1,8 @@
 package com.example.thelibrariansapp;
 
 import com.example.thelibrariansapp.models.Book;
+import com.example.thelibrariansapp.models.Loans;
+import com.example.thelibrariansapp.models.User;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -10,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SocketClient {
@@ -375,6 +378,62 @@ public class SocketClient {
         return serverResponse; // Restituisci la risposta
 
 
+    }
+
+    public List<Loans> getUserLoans(String type, String username) {
+
+        Socket socket = null;
+        DataOutputStream outputStream = null;
+        BufferedReader inputStream = null;
+        ArrayList<Loans> loansList = new ArrayList<>();
+
+        try {
+
+            //test connessione
+            System.out.println("Tentativo di connessione a " + SERVER_IP + ":" + SERVER_PORT);
+            System.out.println("Request type: %s\n" + type);
+            System.out.println("Username: %s\n" + username);
+
+            // Connessione al server
+            socket = new Socket(SERVER_IP, SERVER_PORT);
+
+
+            // Invia la richiesta al server con il tipo e lo username
+            outputStream = new DataOutputStream(socket.getOutputStream());
+            String request = "getloans:" + type + ":" + username + "\n";  // Richiesta al server
+            OutputStream os = socket.getOutputStream();
+            os.write(request.getBytes());
+            outputStream.flush();
+
+            // Ricevi la risposta dal server
+            inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String line;
+            while ((line = inputStream.readLine()) != null && !line.equals("END")) {
+                String[] loanData = line.split(",");
+                if (loanData.length == 5) {  // Assumiamo 5 campi (username, libro, data inizio, data fine, stato)
+                    Loans loan = new Loans();
+                    loan.setUser(new User(loanData[0]));
+                    // Parsing della data (esempio semplificato)
+                    loan.setStartDate(new Date());  // Usa un parser appropriato per convertire le stringhe in Date
+                    loan.setDueDate(new Date());
+                    loan.setStatus(loanData[4]);
+
+                    loansList.add(loan);  // Aggiungi il prestito alla lista
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (outputStream != null) outputStream.close();
+                if (inputStream != null) inputStream.close();
+                if (socket != null) socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return loansList;
     }
 
 
