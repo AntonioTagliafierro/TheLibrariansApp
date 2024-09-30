@@ -89,6 +89,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="11dp"
                 android:visibility="gone"
+                android:entries="@array/generi"
+                android:prompt="@string/seleziona_genere_prompt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cercaEditText" />
 

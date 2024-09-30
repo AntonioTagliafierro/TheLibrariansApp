@@ -25,7 +25,7 @@ public class BookBagActivity extends AppCompatActivity {
     private ImageButton backBtn;
     private Button rimuoviBtn;
     private ImageView bookCover;
-    private TextView isbnBook,bookTitolo, bookGenre, bookAuthor, bookQuantita;
+    private TextView isbnBook,bookTitolo, bookGenre, bookAuthor, bookQuantita, nondisponibileText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,10 @@ public class BookBagActivity extends AppCompatActivity {
         bookAuthor = findViewById(R.id.bookAuthor);
         bookQuantita = findViewById(R.id.bookQuantity);
         isbnBook = findViewById(R.id.isbnBook);
+        nondisponibileText = findViewById(R.id.nondisponibileText);
+
+
+
 
 
 
@@ -65,6 +69,12 @@ public class BookBagActivity extends AppCompatActivity {
         bookGenre.setText(book.getGenre());
         bookAuthor.setText(book.getAuthor());
         bookQuantita.setText(String.valueOf(book.getAvailable()));
+
+        if(book.getAvailable() < 1){
+            nondisponibileText.setActivated(true);
+        }else{
+            nondisponibileText.setActivated(false);
+        }
 
 
         // In un'Activity o Fragment dove visualizzi un singolo libro

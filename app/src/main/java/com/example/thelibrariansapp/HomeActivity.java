@@ -148,10 +148,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        String[] generi = getResources().getStringArray(R.array.genere_array);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, generi);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genereSpinner.setAdapter(adapter);
+
     }
 
     }

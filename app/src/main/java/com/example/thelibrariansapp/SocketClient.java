@@ -206,6 +206,77 @@ public class SocketClient {
         return filteredBooks;  // Restituisci la lista di libri
     }
 
+    public ArrayList<Book> getBooksByIsbn(String isbn) {
+
+        Socket socket = null;
+        DataOutputStream outputStream = null;
+        BufferedReader inputStream = null;
+        ArrayList<Book> filteredBooks = new ArrayList<>();
+
+        try {
+            // Test connessione
+            System.out.println("Tentativo di connessione a " + SERVER_IP + ":" + SERVER_PORT);
+
+
+            // Connessione al server
+            socket = new Socket(SERVER_IP, SERVER_PORT);
+
+            // Imposta un timeout per la lettura dal server (5000 ms = 5 secondi)
+            socket.setSoTimeout(5000);
+
+            // Invia i dati al server
+            outputStream = new DataOutputStream(socket.getOutputStream());
+
+            String getbooks = "isbn:" + isbn + "\n";  // Indica il tipo di richiesta
+            OutputStream os = socket.getOutputStream();
+            os.write(getbooks.getBytes());
+            outputStream.flush();
+
+            // Ricevi i dati dal server
+            inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String line;
+
+            // Continua a leggere fino a quando non arriva "END"
+            while ((line = inputStream.readLine()) != null && !line.equals("END")) {
+                System.out.println("Dati ricevuti: " + line); // Log dei dati ricevuti
+                String[] bookData = line.split(",");  // Spezza la stringa separata da virgole
+                if (bookData.length == 7) {  // Assicurati che ci siano tutti i campi
+                    try {
+                        Book book = new Book(
+                                bookData[0],    // isbn
+                                bookData[1],    // titolo
+                                bookData[2],    // genere
+                                bookData[3],    // imageUrl
+                                bookData[4],    // autore
+                                Integer.parseInt(bookData[5]),  // quantita
+                                Integer.parseInt(bookData[6])   // copiePrestate
+                        );
+                        filteredBooks.add(book);  // Aggiungi il libro alla lista
+                    } catch (NumberFormatException e) {
+                        System.err.println("Errore durante il parsing dei dati del libro: " + e.getMessage());
+                    }
+                } else {
+                    System.err.println("Dati libro non corretti: " + line);
+                }
+            }
+
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // Chiudi le risorse
+            try {
+                if (outputStream != null) outputStream.close();
+                if (inputStream != null) inputStream.close();
+                if (socket != null) socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Ora stampo la lista");
+        System.out.println(filteredBooks.toString());
+        return filteredBooks;  // Restituisci la lista di libri
+    }
 
     public int getNLease(String type, String username) {
         Socket socket = null;
@@ -251,10 +322,14 @@ public class SocketClient {
             }
         }
 
-        return Integer.valueOf(serverResponse); // Restituisci la risposta
+        if(serverResponse.equals("Errore durante l'esecuzione della query")){
+            System.err.println("Errore esecuzione richiesta");
+        }else {
 
+            return Integer.valueOf(serverResponse); // Restituisci la risposta
 
-
+        }
+        return 0;
     }
 
     public ArrayList<Book> getBagBooks(String type, String username) {

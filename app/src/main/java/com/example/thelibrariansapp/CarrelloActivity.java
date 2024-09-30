@@ -81,12 +81,14 @@ public class CarrelloActivity extends AppCompatActivity {
                 });
             }
         }).start();
+//Controlla libri non più disponibili
+        avvisaDisponibile(bookList);
 
 // Aggiungi un listener per il bottone ordina
         ordinaBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (prestiti + sizeCarrello < max) { // Controlla se i prestiti non superano il massimo
+                if (prestiti + sizeCarrello <= max) { // Controlla se i prestiti non superano il massimo
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -135,5 +137,13 @@ public class CarrelloActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void avvisaDisponibile(ArrayList<Book> bookList){
+        for (Book book : bookList) {
+            if (book.getAvailable() < 1){
+                Toast.makeText(CarrelloActivity.this, "il libro" + book.getTitle() + " non è più disponibile",Toast.LENGTH_SHORT);
+            }
+        }
     }
 }

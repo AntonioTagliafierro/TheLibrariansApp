@@ -2,14 +2,31 @@
     <string name="app_name">TheLibrariansApp</string>
 
 
-    <string-array name="genere_array">
+    <string-array name="generi">
         <item>Seleziona un genere</item>
-        <item>Fantascienza</item>
-        <item>Giallo</item>
-        <item>Fantasy</item>
-        <item>Commedia</item>
-        <!-- Aggiungi altri generi se necessario -->
+        <item>classico</item>
+        <item>saggio</item>
+        <item>fantascienza</item>
+        <item>romantico</item>
+        <item>commedia</item>
+        <item>horror</item>
+        <item>thriller</item>
+        <item>giallo</item>
+        <item>fumetto</item>
+        <item>manga</item>
+        <item>didattico</item>
+        <item>romanzo</item>
+        <item>romanzo storico</item>
+        <item>romanzo epistolare</item>
+        <item>epico</item>
+        <item>letteratura</item>
+        <item>fantasy</item>
+        <item>storico</item>
+        <item>avventura</item>
     </string-array>
+
+    <string name="seleziona_genere_prompt">Seleziona un genere</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
