@@ -531,7 +531,7 @@ public class SocketClient {
 
             // Invia la richiesta al server con il tipo e lo username
             outputStream = new DataOutputStream(socket.getOutputStream());
-            String request = "loansbyisbn:" + isbn + "\n";  // Richiesta al server
+            String request = "loansbyisbn:" + isbn + ":\n";  // Richiesta al server
             OutputStream os = socket.getOutputStream();
             os.write(request.getBytes());
             outputStream.flush();

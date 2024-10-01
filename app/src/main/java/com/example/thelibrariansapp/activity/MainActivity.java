@@ -21,19 +21,16 @@ public class MainActivity extends AppCompatActivity {
     private TextView registratiLbl;
     private Button loginBtn;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
         loginBtn = findViewById(R.id.loginBtn);
         registratiLbl = findViewById(R.id.registratiLbl);
-
 
         // Imposta il listener per il clic su "Registrati"
         registratiLbl.setOnClickListener(new View.OnClickListener() {
@@ -44,38 +41,53 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Listener per il login
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("username", username);
-                editor.apply();
+                // Controllo campi vuoti
+                if (username.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Inserisci username e password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                // Invia le credenziali al server
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SocketClient client = new SocketClient();
-                        String response = client.sendCredentials("login", username, password);
+                // Controllo credenziali admin
+                if (username.equals("admin@admin.com") && password.equals("admin")) {
+                    // Naviga alla HomePageActivity per l'admin
+                    Intent intent1 = new Intent(MainActivity.this, HomePageActivity.class);
+                    startActivity(intent1);
+                    finish();
+                } else {
+                    // Memorizza l'username usando SharedPreferences
+                    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("username", username);
+                    editor.apply();
 
-                        // Gestisci la risposta nel thread principale
-                        runOnUiThread(() -> {
-                            if ("Login avvenuto con successo!".equals(response)) {
-                                // Naviga a HomeActivity
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                // Gestisci l'errore
-                                Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }).start();
+                    // Invia le credenziali al server in un nuovo thread
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SocketClient client = new SocketClient();
+                            String response = client.sendCredentials("login", username, password);
+
+                            runOnUiThread(() -> {
+                                if ("Login avvenuto con successo!".equals(response)) {
+                                    // Naviga alla HomeActivity per l'utente normale
+                                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    // Gestisce l'errore
+                                    Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).start();
+                }
             }
         });
     }

@@ -104,7 +104,7 @@
                 android:layout_marginTop="28dp"
                 android:ems="10"
                 android:inputType="text"
-                android:text="Cerca"
+                android:hint="Cerca"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
