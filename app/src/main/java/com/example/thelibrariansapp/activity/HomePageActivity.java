@@ -111,7 +111,7 @@ public class  HomePageActivity extends AppCompatActivity {
                                     } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(HomePageActivity.this);
                                         builder.setTitle("Attenzione");
-                                        builder.setMessage("Nessun libro trovato");
+                                        builder.setMessage("Errore");
                                         builder.setPositiveButton("Ok", (dialog, which) -> searchbar.setText(""));
                                         builder.show();
                                     }

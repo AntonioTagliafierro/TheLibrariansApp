@@ -20,10 +20,10 @@ import java.util.List;
 
 public class RecommendedLoanAdapter extends RecyclerView.Adapter<RecommendedLoanAdapter.Viewholder> {
 
-    List<Loans> items;
+    ArrayList<Loans> items;
     Context context;
 
-    public RecommendedLoanAdapter(List<Loans> items) {
+    public RecommendedLoanAdapter(ArrayList<Loans> items) {
         this.items = items;
     }
 

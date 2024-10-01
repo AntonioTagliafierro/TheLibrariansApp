@@ -32,7 +32,6 @@ public class BookLoans extends AppCompatActivity {
     private ImageView ImageViewCopertinaLibro;
     private Book object;
 
-    private List<Loans> ItemsLoans = new ArrayList<>();
 
     SocketClient client = new SocketClient();
 
@@ -66,8 +65,9 @@ public class BookLoans extends AppCompatActivity {
                 SocketClient client = new SocketClient();
 
                 // Ottieni la lista di libri dal server
-                ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
-
+                ArrayList<Loans> ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
+                System.out.println(ItemsLoans.get(0).getUser().getUsername());
+                System.out.println(ItemsLoans.get(0).getStatus());
                 // Aggiorna l'interfaccia utente
                 runOnUiThread(new Runnable() {
                     @Override
@@ -89,7 +89,7 @@ public class BookLoans extends AppCompatActivity {
 
 
 
-    private void initRecyclerview(List<Loans> itemsLoans) {
+    private void initRecyclerview(ArrayList<Loans> itemsLoans) {
         //Add element in the recycler view
         recyclerViewLoans = findViewById(R.id.recyclerViewLoans);
         recyclerViewLoans.setHasFixedSize(true);
