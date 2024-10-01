@@ -83,7 +83,7 @@ public class BookActivity extends AppCompatActivity {
         aggiungiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Book book = (Book) getIntent().getSerializableExtra("selectedBook");
+
                 // Ottieni il libro corrente
                 CartManager.getInstance().addBook(book); // Aggiungi il libro al carrello
 
