@@ -14,6 +14,7 @@ import com.example.thelibrariansapp.models.CardLoanPropertyDomain;
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.models.Loans;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +38,13 @@ public class RecommendedLoanAdapter extends RecyclerView.Adapter<RecommendedLoan
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, @SuppressLint("RecyclerView") int position) {
-        if(items.get(position).getStatus().equals("attivo"))
-        {
             holder.textEmailUserLoan.setText(items.get(position).getUser().getUsername());
-            holder.textDataLoan.setText(items.get(position).getFormattedStartDate().toString());
-            holder.textDueData.setText(items.get(position).getFormattedDueDate().toString());
-        }
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String startDate = sdf.format(items.get(position).getStartDate());
+            holder.textDataLoan.setText(startDate);
+            String dueDate = sdf.format(items.get(position).getDueDate());
+            holder.textDueData.setText(dueDate);
+
     }
 
     @Override

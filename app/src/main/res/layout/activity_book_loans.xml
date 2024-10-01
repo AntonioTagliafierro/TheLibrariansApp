@@ -186,8 +186,8 @@
             </HorizontalScrollView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="523dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@color/navy">
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -241,7 +241,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
-                    android:text="Lista dei prestiti"
+                    android:text="Lista dei prestiti attivi"
                     android:textColor="@color/lemon_cream"
                     android:textSize="30sp"
                     android:textStyle="bold|italic"
@@ -256,7 +256,8 @@
                     android:id="@+id/textView11"
                     android:layout_width="267dp"
                     android:layout_height="wrap_content"
-                    android:text="Sotto troverai la lista di tutti i prestiti del libro"
+                    android:layout_marginTop="5dp"
+                    android:text="Sotto troverai la lista di tutti i prestiti attivi del libro"
                     android:textAlignment="center"
                     android:textColor="@color/lemon_cream"
                     android:textSize="24sp"
@@ -265,7 +266,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView10"
-                    app:layout_constraintVertical_bias="0.022" />
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
                     android:id="@+id/textView12"
@@ -287,17 +288,55 @@
                     android:id="@+id/textView13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
                     android:layout_marginTop="40dp"
-                    android:layout_marginEnd="5dp"
                     android:fontFamily="serif"
                     android:text="COPIE IN PRESTITO"
                     android:textColor="@color/lemon_cream"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/textView12"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:text="Lista dei prestiti in ritardo"
+                    android:textColor="@color/lemon_cream"
+                    android:textSize="30sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewLoans" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="267dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Sotto troverai la lista di tutti i prestiti in ritardo che devono essere consegnati"
+                    android:textAlignment="center"
+                    android:textColor="@color/lemon_cream"
+                    android:textSize="24sp"
+                    android:textStyle="italic"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewLoansRitardo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>

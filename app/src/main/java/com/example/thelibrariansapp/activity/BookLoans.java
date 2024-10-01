@@ -32,11 +32,13 @@ public class BookLoans extends AppCompatActivity {
     private ImageView ImageViewCopertinaLibro;
     private Book object;
 
+    private ArrayList<Loans> ItemsLoans = new ArrayList<>();
+    private ArrayList<Loans> itemsLoansRitardo = new ArrayList<>();
 
     SocketClient client = new SocketClient();
 
-    private RecyclerView.Adapter adapterRecommended;
-    private  RecyclerView recyclerViewLoans;
+    private RecyclerView.Adapter adapterRecommended,adapterRecommendedRitardo;
+    private  RecyclerView recyclerViewLoans,recyclerViewLoansRitardo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,36 +67,29 @@ public class BookLoans extends AppCompatActivity {
                 SocketClient client = new SocketClient();
 
                 // Ottieni la lista di libri dal server
-                ArrayList<Loans> ItemsLoans = client.getBookLoans("loansbyisbn", object.getIsbn());
-
-                // Aggiungi log per monitorare i dati ricevuti
-                if (ItemsLoans != null) {
-                    System.out.println("Numero di prestiti ricevuti: " + ItemsLoans.size());
-                    for (Loans loan : ItemsLoans) {
-                        System.out.println("Prestito: " + loan.getUser().getUsername() + ", Stato: " + loan.getStatus());
-                    }
-                } else {
-                    System.out.println("ItemsLoans è null.");
-                }
+                ItemsLoans = client.getBookLoans("loansbyisbnnotdelivered",object.getIsbn());
+                itemsLoansRitardo = client.getBookLoans("overdueloansbyisbn",object.getIsbn());
 
                 // Aggiorna l'interfaccia utente
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (ItemsLoans != null && !ItemsLoans.isEmpty()) {
-                            // Aggiungi elemento nella recycler view
+                            //Add element in the recycler view
+
                             initRecyclerview(ItemsLoans);
                         } else {
-                            Toast.makeText(BookLoans.this, "Nessun prestito trovato", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BookLoans.this, "Non ci sono prestiti attivi per questo libro", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
         }).start();
 
+        initRecyclerviewRitardo(itemsLoansRitardo);
 
 
-    }
+        }
 
 
 
@@ -105,6 +100,16 @@ public class BookLoans extends AppCompatActivity {
         recyclerViewLoans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         adapterRecommended = new RecommendedLoanAdapter(itemsLoans);
         recyclerViewLoans.setAdapter(adapterRecommended);
+
+    }
+
+    private void initRecyclerviewRitardo(ArrayList<Loans> itemsLoansRitardo) {
+        //Add element in the recycler view
+        recyclerViewLoansRitardo = findViewById(R.id.recyclerViewLoansRitardo);
+        recyclerViewLoansRitardo.setHasFixedSize(true);
+        recyclerViewLoansRitardo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        adapterRecommendedRitardo = new RecommendedLoanAdapter(itemsLoansRitardo);
+        recyclerViewLoansRitardo.setAdapter(adapterRecommendedRitardo);
 
     }
 
