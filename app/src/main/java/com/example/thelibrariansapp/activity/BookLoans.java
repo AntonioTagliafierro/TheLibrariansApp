@@ -33,11 +33,12 @@ public class BookLoans extends AppCompatActivity {
     private Book object;
 
     private ArrayList<Loans> ItemsLoans = new ArrayList<>();
+    private ArrayList<Loans> itemsLoansRitardo = new ArrayList<>();
 
     SocketClient client = new SocketClient();
 
-    private RecyclerView.Adapter adapterRecommended;
-    private  RecyclerView recyclerViewLoans;
+    private RecyclerView.Adapter adapterRecommended,adapterRecommendedRitardo;
+    private  RecyclerView recyclerViewLoans,recyclerViewLoansRitardo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,8 @@ public class BookLoans extends AppCompatActivity {
                 SocketClient client = new SocketClient();
 
                 // Ottieni la lista di libri dal server
-                ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
+                ItemsLoans = client.getBookLoans("loansbyisbnnotdelivered",object.getIsbn());
+                itemsLoansRitardo = client.getBookLoans("overdueloansbyisbn",object.getIsbn());
 
                 // Aggiorna l'interfaccia utente
                 runOnUiThread(new Runnable() {
@@ -77,12 +79,14 @@ public class BookLoans extends AppCompatActivity {
 
                             initRecyclerview(ItemsLoans);
                         } else {
-                            Toast.makeText(BookLoans.this, "Non ci sono prestiti per questo libro", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BookLoans.this, "Non ci sono prestiti attivi per questo libro", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
         }).start();
+
+        initRecyclerviewRitardo(itemsLoansRitardo);
 
 
         }
@@ -96,6 +100,16 @@ public class BookLoans extends AppCompatActivity {
         recyclerViewLoans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         adapterRecommended = new RecommendedLoanAdapter(itemsLoans);
         recyclerViewLoans.setAdapter(adapterRecommended);
+
+    }
+
+    private void initRecyclerviewRitardo(ArrayList<Loans> itemsLoansRitardo) {
+        //Add element in the recycler view
+        recyclerViewLoansRitardo = findViewById(R.id.recyclerViewLoansRitardo);
+        recyclerViewLoansRitardo.setHasFixedSize(true);
+        recyclerViewLoansRitardo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        adapterRecommendedRitardo = new RecommendedLoanAdapter(itemsLoansRitardo);
+        recyclerViewLoansRitardo.setAdapter(adapterRecommendedRitardo);
 
     }
 

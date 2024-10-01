@@ -44,6 +44,7 @@ public class RecommendedLoanAdapter extends RecyclerView.Adapter<RecommendedLoan
             holder.textDataLoan.setText(startDate);
             String dueDate = sdf.format(items.get(position).getDueDate());
             holder.textDueData.setText(dueDate);
+
     }
 
     @Override
