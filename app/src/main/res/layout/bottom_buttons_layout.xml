@@ -29,9 +29,10 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/ImgBtnHome"
+                android:id="@+id/imgBtnCarrello"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:clickable="true"
                 android:src="@android:drawable/btn_star" />
 
             <TextView
@@ -49,9 +50,10 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/imgBtnCarrello"
+                android:id="@+id/imgBtnHome"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:clickable="true"
                 android:src="@android:drawable/btn_star" />
 
             <TextView
@@ -73,6 +75,7 @@
                 android:id="@+id/imgBtnProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:clickable="true"
                 android:src="@android:drawable/btn_star" />
 
             <TextView

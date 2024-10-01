@@ -93,4 +93,11 @@
         app:layout_constraintStart_toEndOf="@+id/bag"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include
+        layout="@layout/bottom_buttons_layout"
+        android:id="@+id/bottom_navigation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

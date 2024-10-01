@@ -1,9 +1,11 @@
 package com.example.thelibrariansapp.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -20,13 +22,18 @@ import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private ArrayList<Book> bookList; // Memorizza la lista di libri
+    private BookAdapter bookAdapter;
+
+    private ImageButton homeButton;
+    private ImageButton carrelloButton;
+    private ImageButton profiloButton;
 
     private EditText cercaEditText;
     private Button cercaBtn, filterBtn;
     private Spinner genereSpinner;
 
-    private RecyclerView books; // Assicurati che questo sia il nome corretto per il tuo RecyclerView
-    private BookAdapter bookAdapter;
+    private RecyclerView books;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +41,24 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         // Inizializza le view
-
+        homeButton = findViewById(R.id.imgBtnHome);
+        carrelloButton = findViewById(R.id.imgBtnCarrello);
+        profiloButton = findViewById(R.id.imgBtnProfile);
         cercaEditText = findViewById(R.id.cercaEditText);
         cercaBtn = findViewById(R.id.cercaBtn);
         filterBtn = findViewById(R.id.filterBtn);
         genereSpinner = findViewById(R.id.genereSpinner);
+        books = findViewById(R.id.booksRecyclerView);
 
-        //gestione visibilità filtri e cerca
+        // Imposta il LayoutManager per RecyclerView
+        books.setLayoutManager(new LinearLayoutManager(this));
+
+        // Gestione della navigazione nei pulsanti
+        homeButton.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
+        carrelloButton.setOnClickListener(v -> startActivity(new Intent(this, CarrelloActivity.class)));
+        profiloButton.setOnClickListener(v -> startActivity(new Intent(this, ProfiloActivity.class)));
+
+        // Gestione visibilità filtri e cerca
         filterBtn.setOnClickListener(new View.OnClickListener() {
             boolean isVisible = false;
 
@@ -59,91 +77,77 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        books = findViewById(R.id.booksRecyclerView); // Assicurati che questo ID corrisponda al tuo layout XML
-
-        // Imposta il LayoutManager per RecyclerView
-        books.setLayoutManager(new LinearLayoutManager(this));
-
-        // Thread per ottenere i libri dal server
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SocketClient client = new SocketClient();
-
-                // Ottieni la lista di libri dal server
-                ArrayList<Book> bookList = client.getAllBooks("allbooks");
-
-                // Aggiorna l'interfaccia utente
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (bookList != null && !bookList.isEmpty()) {
-                            bookAdapter = new BookAdapter(bookList, HomeActivity.this);
-
-                            books.setAdapter(bookAdapter);
-                        } else {
-                            Toast.makeText(HomeActivity.this, "Nessun libro trovato", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }).start();
-
+        // Carica i libri dal server
+        loadBooksFromServer();
 
         // Imposta il listener per il pulsante di ricerca
-        cercaBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String titolo = cercaEditText.getText().toString().trim();
-                String genere = genereSpinner.getSelectedItem().toString();
+        cercaBtn.setOnClickListener(v -> searchBooks());
+    }
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SocketClient client = new SocketClient();
-                        String type;
-                        ArrayList<Book> filteredBooks = null;
-                        if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
-                            // Caso 1: EditText vuoto e nessun genere selezionato
-                            type = "allbooks";
-                            filteredBooks = client.getFilteredBooks(type);
-                            Toast.makeText(getApplicationContext(), "Nessun titolo o genere selezionato", Toast.LENGTH_SHORT).show();
-                        } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
-                            // Caso 2: Titolo presente e genere selezionato
-                            type = "totalfilter:" + titolo + ":" + genere;
-                            filteredBooks = client.getFilteredBooks(type);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Carica i libri dal server solo se non sono già stati caricati
+        if (bookList == null) {
+            loadBooksFromServer();
+        } else {
+            // Aggiorna l'adapter se i libri sono già caricati
+            bookAdapter.notifyDataSetChanged();
+        }
+    }
 
-                        } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
-                            // Caso 3: Titolo presente, ma nessun genere selezionato
-                            type = "onlytitle:" + titolo;
-                            filteredBooks = client.getFilteredBooks(type);
+    private void loadBooksFromServer() {
+        new Thread(() -> {
+            SocketClient client = new SocketClient();
+            bookList = client.getAllBooks("allbooks"); // Ottieni i libri dal server
 
-                        } else if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
-                            // Caso 4: Nessun titolo ma genere selezionato
-                            type = "onlygenre:" + genere;
-                            filteredBooks = client.getFilteredBooks(type);
-                        }
+            runOnUiThread(() -> {
+                if (bookList != null && !bookList.isEmpty()) {
+                    bookAdapter = new BookAdapter(bookList, HomeActivity.this);
+                    books.setAdapter(bookAdapter);
+                } else {
+                    Toast.makeText(HomeActivity.this, "Nessun libro trovato", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
+    }
 
+    private void searchBooks() {
+        String titolo = cercaEditText.getText().toString().trim();
+        String genere = genereSpinner.getSelectedItem().toString();
 
-                        ArrayList<Book> finalFilteredBooks = filteredBooks;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (finalFilteredBooks != null && !finalFilteredBooks.isEmpty()) {
-                                    bookAdapter.updateBooks(finalFilteredBooks);
-                                } else {
-                                    Toast.makeText(HomeActivity.this, "Nessun libro trovato per i criteri di ricerca", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }
-                }).start();
+        new Thread(() -> {
+            SocketClient client = new SocketClient();
+            String type;
+            ArrayList<Book> filteredBooks = null;
+
+            if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
+                // Caso 1: EditText vuoto e nessun genere selezionato
+                type = "allbooks";
+                filteredBooks = client.getFilteredBooks(type);
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Nessun titolo o genere selezionato", Toast.LENGTH_SHORT).show());
+            } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
+                // Caso 2: Titolo presente e genere selezionato
+                type = "totalfilter:" + titolo + ":" + genere;
+                filteredBooks = client.getFilteredBooks(type);
+            } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
+                // Caso 3: Titolo presente, ma nessun genere selezionato
+                type = "onlytitle:" + titolo;
+                filteredBooks = client.getFilteredBooks(type);
+            } else if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
+                // Caso 4: Nessun titolo ma genere selezionato
+                type = "onlygenre:" + genere;
+                filteredBooks = client.getFilteredBooks(type);
             }
-        });
 
-
-
+            ArrayList<Book> finalFilteredBooks = filteredBooks;
+            runOnUiThread(() -> {
+                if (finalFilteredBooks != null && !finalFilteredBooks.isEmpty()) {
+                    bookAdapter.updateBooks(finalFilteredBooks);
+                } else {
+                    Toast.makeText(HomeActivity.this, "Nessun libro trovato per i criteri di ricerca", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
     }
-
-    }
-
+}

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.activity.BookActivity;
+import com.example.thelibrariansapp.activity.BookBagActivity;
 import com.example.thelibrariansapp.models.Book;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class BagBooksAdapter extends RecyclerView.Adapter<BagBooksAdapter.MyView
         holder.bookImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, BookActivity.class);
+                Intent intent = new Intent(context, BookBagActivity.class);
                 intent.putExtra("Book", books.get(position));
                 context.startActivity(intent);
             }

@@ -25,7 +25,7 @@ public class BookBagActivity extends AppCompatActivity {
     private ImageButton backBtn;
     private Button rimuoviBtn;
     private ImageView bookCover;
-    private TextView isbnBook,bookTitolo, bookGenre, bookAuthor, bookQuantita, nondisponibileText;
+    private TextView bookIsbn,bookTitolo, bookGenre, bookAuthor, bookQuantita, nondisponibileText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class BookBagActivity extends AppCompatActivity {
         bookGenre = findViewById(R.id.bookGenre);
         bookAuthor = findViewById(R.id.bookAuthor);
         bookQuantita = findViewById(R.id.bookQuantity);
-        isbnBook = findViewById(R.id.isbnBook);
+        bookIsbn = findViewById(R.id.bookIsbn);
         nondisponibileText = findViewById(R.id.nondisponibileText);
 
 
@@ -63,12 +63,15 @@ public class BookBagActivity extends AppCompatActivity {
         String url = book.getImageUrl();
         System.out.println("Url immagine....");
         System.out.println(url);
-        Glide.with(this).load(url).transform(new GranularRoundedCorners(30,30,0,0)).into(bookCover);
-        // Imposta i dettagli del libro nelle TextView
+        Glide.with(this)
+                .load(url)
+                .centerInside()
+                .into(bookCover);        // Imposta i dettagli del libro nelle TextView
         bookTitolo.setText(book.getTitle());
         bookGenre.setText(book.getGenre());
         bookAuthor.setText(book.getAuthor());
         bookQuantita.setText(String.valueOf(book.getAvailable()));
+        bookIsbn.setText(book.getIsbn());
 
         if(book.getAvailable() < 1){
             nondisponibileText.setActivated(true);
@@ -87,24 +90,35 @@ public class BookBagActivity extends AppCompatActivity {
         rimuoviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Book book = (Book) getIntent().getSerializableExtra("selectedBook");
                 // Ottieni il libro corrente
-                CartManager.getInstance().removeBook(book);// Rimuovi il libro dal carrello
+                CartManager.getInstance().removeBook(book); // Rimuovi il libro dal carrello
 
-                // Thread per rimuovere libro dal  DB
+                // Thread per rimuovere libro dal DB
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         SocketClient client = new SocketClient();
+                        System.out.println("Sto rimuovendo il libro " + book.getIsbn());
                         String response = client.bookTODB("rimuovidalcarrello", username, book.getIsbn());
-                        Toast.makeText(BookBagActivity.this, response, Toast.LENGTH_SHORT).show();
 
+                        // Esegui il Toast nel thread principale
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(BookBagActivity.this, response, Toast.LENGTH_SHORT).show();
+
+                                // Torna alla CarrelloActivity e aggiorna i libri
+                                Intent intent = new Intent(BookBagActivity.this, CarrelloActivity.class);
+                                intent.putExtra("updated", true); // Passa un extra per indicare che il carrello è aggiornato
+                                startActivity(intent);
+                                finish(); // Termina BookBagActivity
+                            }
+                        });
                     }
                 }).start();
-
-
             }
         });
+
 
 
 

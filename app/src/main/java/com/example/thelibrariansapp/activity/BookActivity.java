@@ -60,7 +60,10 @@ public class BookActivity extends AppCompatActivity {
         String url = book.getImageUrl();
         System.out.println("Url immagine....");
         System.out.println(url);
-        Glide.with(this).load(url).transform(new GranularRoundedCorners(30,30,0,0)).into(bookCover);
+        Glide.with(this)
+                .load(url)
+                .centerInside()
+                .into(bookCover);
         // Imposta i dettagli del libro nelle TextView
         bookTitolo.setText(book.getTitle());
         bookGenre.setText(book.getGenre());
