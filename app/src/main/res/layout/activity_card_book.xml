@@ -7,7 +7,7 @@
     android:layout_margin="8dp"
     android:background="@drawable/cardbook"
     android:elevation="3dp"
-    tools:context="com.project.thelibrarians_lso2324.activities.HomePageActivity">
+    tools:context=".activity.HomePageActivity">
 
     <ImageView
         android:id="@+id/imageViewCopertinaLibroCardBook"

@@ -32,6 +32,7 @@ public class BookLoans extends AppCompatActivity {
     private ImageView ImageViewCopertinaLibro;
     private Book object;
 
+    private ArrayList<Loans> ItemsLoans = new ArrayList<>();
 
     SocketClient client = new SocketClient();
 
@@ -65,9 +66,8 @@ public class BookLoans extends AppCompatActivity {
                 SocketClient client = new SocketClient();
 
                 // Ottieni la lista di libri dal server
-                ArrayList<Loans> ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
-                System.out.println(ItemsLoans.get(0).getUser().getUsername());
-                System.out.println(ItemsLoans.get(0).getStatus());
+                ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
+
                 // Aggiorna l'interfaccia utente
                 runOnUiThread(new Runnable() {
                     @Override
@@ -77,7 +77,7 @@ public class BookLoans extends AppCompatActivity {
 
                             initRecyclerview(ItemsLoans);
                         } else {
-                            Toast.makeText(BookLoans.this, "Nessun libro trovato", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BookLoans.this, "Non ci sono prestiti per questo libro", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
