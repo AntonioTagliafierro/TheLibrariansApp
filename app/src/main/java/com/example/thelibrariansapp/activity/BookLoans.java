@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.thelibrariansapp.R;
+import com.example.thelibrariansapp.adapters.BookAdapter;
 import com.example.thelibrariansapp.adapters.RecommendedLoanAdapter;
 import com.example.thelibrariansapp.models.Book;
 import com.example.thelibrariansapp.models.Loans;
@@ -58,10 +60,34 @@ public class BookLoans extends AppCompatActivity {
         initView();
         getBundle();
 
-        //Add element in the recycler view
-        ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
-        initRecyclerview(ItemsLoans);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SocketClient client = new SocketClient();
+
+                // Ottieni la lista di libri dal server
+                ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
+
+                // Aggiorna l'interfaccia utente
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (ItemsLoans != null && !ItemsLoans.isEmpty()) {
+                            //Add element in the recycler view
+
+                            initRecyclerview(ItemsLoans);
+                        } else {
+                            Toast.makeText(BookLoans.this, "Nessun libro trovato", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }).start();
+
+
         }
+
+
 
     private void initRecyclerview(List<Loans> itemsLoans) {
         //Add element in the recycler view
