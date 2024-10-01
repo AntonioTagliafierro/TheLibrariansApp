@@ -25,7 +25,7 @@ public class BookActivity extends AppCompatActivity {
     private ImageButton backBtn;
     private Button aggiungiBtn;
     private ImageView bookCover;
-    private TextView isbnBook,bookTitolo, bookGenre, bookAuthor, bookQuantita;
+    private TextView bookIsbn,bookTitolo, bookGenre, bookAuthor, bookQuantita;
 
 
     @Override
@@ -40,7 +40,7 @@ public class BookActivity extends AppCompatActivity {
         bookGenre = findViewById(R.id.bookGenre);
         bookAuthor = findViewById(R.id.bookAuthor);
         bookQuantita = findViewById(R.id.bookQuantity);
-        isbnBook = findViewById(R.id.isbnBook);
+        bookIsbn= findViewById(R.id.isbnBook);
         aggiungiBtn = findViewById(R.id.aggiungiBtn);
 
 
@@ -66,6 +66,7 @@ public class BookActivity extends AppCompatActivity {
         bookGenre.setText(book.getGenre());
         bookAuthor.setText(book.getAuthor());
         bookQuantita.setText(String.valueOf(book.getAvailable()));
+        bookIsbn.setText(book.getIsbn());
 
         if (book.getAvailable() < 1){
             aggiungiBtn.setActivated(false);
