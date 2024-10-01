@@ -47,15 +47,7 @@ public class RecommendedBookAdapter extends RecyclerView.Adapter<RecommendedBook
         holder.TextAuthor.setText(items.get(position).getAuthor());
         holder.TextISBN.setText(items.get(position).getIsbn());
 
-        System.out.println(items.get(position).getGenre());
-        System.out.println(items.get(position).getTitle());
-        System.out.println(items.get(position).getAuthor());
-        System.out.println(items.get(position).getIsbn());
-
-
-        int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getImageUrl(),
-                "drawable",holder.itemView.getContext().getPackageName());
-        Glide.with(holder.itemView.getContext()).load(drawableResourceId).transform(new GranularRoundedCorners(30,30,0,0)).into(holder.ImageCopertina);
+        Glide.with(context).load(items.get(position).getImageUrl()).centerInside().into(holder.ImageCopertina);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

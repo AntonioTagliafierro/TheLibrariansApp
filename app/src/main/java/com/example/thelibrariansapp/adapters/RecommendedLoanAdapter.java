@@ -12,17 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.thelibrariansapp.models.CardLoanPropertyDomain;
 import com.example.thelibrariansapp.R;
+import com.example.thelibrariansapp.models.Loans;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class RecommendedLoanAdapter extends RecyclerView.Adapter<RecommendedLoanAdapter.Viewholder> {
 
-    ArrayList<CardLoanPropertyDomain> items;
+    List<Loans> items;
     Context context;
 
-    public RecommendedLoanAdapter(ArrayList<CardLoanPropertyDomain> items) {
+    public RecommendedLoanAdapter(List<Loans> items) {
         this.items = items;
     }
 
@@ -36,9 +37,12 @@ public class RecommendedLoanAdapter extends RecyclerView.Adapter<RecommendedLoan
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, @SuppressLint("RecyclerView") int position) {
-        holder.textEmailUserLoan.setText(items.get(position).getEmail());
-        holder.textDataLoan.setText(items.get(position).getStartDate().toString());
-        holder.textDueData.setText(items.get(position).getDueDate().toString());
+        if(items.get(position).getStatus().equals("attivo"))
+        {
+            holder.textEmailUserLoan.setText(items.get(position).getUser().getUsername());
+            holder.textDataLoan.setText(items.get(position).getStartDate().toString());
+            holder.textDueData.setText(items.get(position).getDueDate().toString());
+        }
     }
 
     @Override

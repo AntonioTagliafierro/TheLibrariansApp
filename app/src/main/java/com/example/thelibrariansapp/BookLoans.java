@@ -13,12 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.thelibrariansapp.activity.HomePageActivity;
-import com.example.thelibrariansapp.models.Book;
 import com.example.thelibrariansapp.adapters.RecommendedLoanAdapter;
+import com.example.thelibrariansapp.models.Book;
 import com.example.thelibrariansapp.models.CardLoanPropertyDomain;
+import com.example.thelibrariansapp.models.Loans;
+import com.example.thelibrariansapp.utils.SocketClient;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class BookLoans extends AppCompatActivity {
@@ -27,6 +30,10 @@ public class BookLoans extends AppCompatActivity {
     textViewCopiesInUse,textViewISBN;
     private ImageView ImageViewCopertinaLibro;
     private Book object;
+
+    private List<Loans> ItemsLoans = new ArrayList<>();
+
+    SocketClient client = new SocketClient();
 
     private RecyclerView.Adapter adapterRecommended;
     private  RecyclerView recyclerViewLoans;
@@ -53,20 +60,12 @@ public class BookLoans extends AppCompatActivity {
         getBundle();
 
         //Add element in the recycler view
-        initRecyclerview();
+        ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
+        initRecyclerview(ItemsLoans);
         }
 
-    private void initRecyclerview() {
+    private void initRecyclerview(List<Loans> itemsLoans) {
         //Add element in the recycler view
-        ArrayList<CardLoanPropertyDomain> itemsLoans = new ArrayList<>();
-        itemsLoans.add(new CardLoanPropertyDomain("alessandro@gmail.com", LocalDate.parse("2024-09-09"), LocalDate.parse("2024-09-16")));
-        itemsLoans.add(new CardLoanPropertyDomain("marco@gmail.com", LocalDate.parse("2024-09-09"), LocalDate.parse("2024-09-24")));
-        itemsLoans.add(new CardLoanPropertyDomain("giovanni@gmail.com", LocalDate.parse("2024-09-09"), LocalDate.parse("2024-09-20")));
-        itemsLoans.add(new CardLoanPropertyDomain("luca@gmail.com", LocalDate.parse("2024-09-09"), LocalDate.parse("2024-09-25")));
-        itemsLoans.add(new CardLoanPropertyDomain("antonio@gmail.com", LocalDate.parse("2024-09-09"), LocalDate.parse("2024-09-29")));
-        itemsLoans.add(new CardLoanPropertyDomain("giovanniesposito2022@gmail.com", LocalDate.parse("2024-09-09"), LocalDate.parse("2024-09-29")));
-
-
         recyclerViewLoans = findViewById(R.id.recyclerViewLoans);
         recyclerViewLoans.setHasFixedSize(true);
         recyclerViewLoans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -77,12 +76,12 @@ public class BookLoans extends AppCompatActivity {
 
     private void getBundle() {
         object = (Book) getIntent().getSerializableExtra("object");
-        int drawableResourceId = this.getResources().getIdentifier(object.getImageUrl(), "drawable", this.getPackageName());
-            Glide.with(this).load(drawableResourceId).into(ImageViewCopertinaLibro);
+            Glide.with(this).load(object.getImageUrl()).centerInside().into(ImageViewCopertinaLibro);
 
             textViewTitle.setText(object.getTitle());
             textViewAuthor.setText(object.getAuthor());
             textViewCategory.setText(object.getGenre());
+            textViewISBN.setText(object.getIsbn());
             textViewTotalCopies.setText(String.valueOf(object.getQuantity()));
             textViewCopiesInUse.setText(String.valueOf(object.getCopyOnLease()));
         }
