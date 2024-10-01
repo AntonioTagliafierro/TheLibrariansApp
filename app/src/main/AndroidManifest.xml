@@ -17,7 +17,7 @@
         android:theme="@style/Theme.TheLibrariansApp"
         tools:targetApi="31">
         <activity
-            android:name=".BookLoans"
+            android:name=".activity.BookLoans"
             android:exported="false" />
 
         <activity

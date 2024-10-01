@@ -1,4 +1,4 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,14 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.thelibrariansapp.activity.HomePageActivity;
+import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.adapters.RecommendedLoanAdapter;
 import com.example.thelibrariansapp.models.Book;
-import com.example.thelibrariansapp.models.CardLoanPropertyDomain;
 import com.example.thelibrariansapp.models.Loans;
 import com.example.thelibrariansapp.utils.SocketClient;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
