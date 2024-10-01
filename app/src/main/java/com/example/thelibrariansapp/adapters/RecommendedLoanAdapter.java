@@ -40,8 +40,8 @@ public class RecommendedLoanAdapter extends RecyclerView.Adapter<RecommendedLoan
         if(items.get(position).getStatus().equals("attivo"))
         {
             holder.textEmailUserLoan.setText(items.get(position).getUser().getUsername());
-            holder.textDataLoan.setText(items.get(position).getStartDate().toString());
-            holder.textDueData.setText(items.get(position).getDueDate().toString());
+            holder.textDataLoan.setText(items.get(position).getFormattedStartDate().toString());
+            holder.textDueData.setText(items.get(position).getFormattedDueDate().toString());
         }
     }
 

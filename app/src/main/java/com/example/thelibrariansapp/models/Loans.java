@@ -1,7 +1,9 @@
 package com.example.thelibrariansapp.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Loans {
 
@@ -60,7 +62,15 @@ public class Loans {
 //        this.startDate = startDate;
 //        this.dueDate = dueDate;
 //    }
+    public String getFormattedStartDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return sdf.format(startDate);
+}
 
+    public String getFormattedDueDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return sdf.format(dueDate);
+    }
     public Loans(User user, List<Book> books, Date startDate, Date dueDate, String status) {
         this.user = user;
         this.books = books;

@@ -65,19 +65,27 @@ public class BookLoans extends AppCompatActivity {
                 SocketClient client = new SocketClient();
 
                 // Ottieni la lista di libri dal server
-                ArrayList<Loans> ItemsLoans = client.getBookLoans("loansbyisbn",object.getIsbn());
-                System.out.println(ItemsLoans.get(0).getUser().getUsername());
-                System.out.println(ItemsLoans.get(0).getStatus());
+                ArrayList<Loans> ItemsLoans = client.getBookLoans("loansbyisbn", object.getIsbn());
+
+                // Aggiungi log per monitorare i dati ricevuti
+                if (ItemsLoans != null) {
+                    System.out.println("Numero di prestiti ricevuti: " + ItemsLoans.size());
+                    for (Loans loan : ItemsLoans) {
+                        System.out.println("Prestito: " + loan.getUser().getUsername() + ", Stato: " + loan.getStatus());
+                    }
+                } else {
+                    System.out.println("ItemsLoans è null.");
+                }
+
                 // Aggiorna l'interfaccia utente
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (ItemsLoans != null && !ItemsLoans.isEmpty()) {
-                            //Add element in the recycler view
-
+                            // Aggiungi elemento nella recycler view
                             initRecyclerview(ItemsLoans);
                         } else {
-                            Toast.makeText(BookLoans.this, "Nessun libro trovato", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BookLoans.this, "Nessun prestito trovato", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -85,7 +93,8 @@ public class BookLoans extends AppCompatActivity {
         }).start();
 
 
-        }
+
+    }
 
 
 
