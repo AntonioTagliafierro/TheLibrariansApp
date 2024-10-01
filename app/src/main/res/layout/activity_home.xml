@@ -9,6 +9,12 @@
     tools:context=".activity.HomeActivity">
 
 
+    <include
+        android:id="@+id/bottomButtonsLayout"
+        layout="@layout/bottom_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
     <TextView
@@ -18,25 +24,46 @@
         android:layout_marginStart="16dp"
         android:text="Home"
         android:textColor="@color/navy"
-        android:textSize="@dimen/title_dimen"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/icon_app"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/icon_app" />
+
+    <ImageView
+        android:id="@+id/icon_app"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/BookHub"
+        android:layout_width="152dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="16dp"
+        android:paddingTop="5dp"
+        android:src="@drawable/title"
+        app:layout_constraintStart_toEndOf="@+id/homeTitolo"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView4"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/rounded_cont_top"
         android:backgroundTint="@color/navy"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/icon_app"
         app:layout_constraintVertical_bias="1.0">
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -58,7 +85,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/cercaBtn" />
 
 
-
             <Button
                 android:id="@+id/cercaBtn"
                 android:layout_width="wrap_content"
@@ -69,7 +95,6 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/filterBtn" />
-
 
 
             <EditText
@@ -91,9 +116,8 @@
                 android:layout_height="25dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="11dp"
+
                 android:visibility="gone"
-                android:entries="@array/generi"
-                android:prompt="@string/seleziona_genere_prompt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cercaEditText" />
 
@@ -103,31 +127,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="filtri"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <ImageView
-        android:id="@+id/icon_app"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/BookHub"
-        android:layout_width="152dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:paddingTop="5dp"
-        android:src="@drawable/title"
-        app:layout_constraintStart_toEndOf="@+id/homeTitolo"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
