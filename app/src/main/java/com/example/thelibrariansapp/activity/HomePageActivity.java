@@ -68,9 +68,33 @@ public class  HomePageActivity extends AppCompatActivity {
                     searchbar.setText("");
                     return true;
                 }
+
+                //Check if the touch was on the drawableStart
+                if (event.getRawX() <= (searchbar.getLeft() + searchbar.getCompoundDrawables()[0].getBounds().width())) {
+                    ArrayList<Book> BookIsbn = socketClient.getBooksByIsbn(searchbar.getText().toString());
+                    // Go to the search page
+                    if (BookIsbn.size() > 0) {
+                        Intent intent = new Intent(HomePageActivity.this, BookLoans.class);
+                        intent.putExtra("object", BookIsbn.get(0));
+                        startActivity(intent);
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(HomePageActivity.this);
+                        builder.setTitle("Attenzione");
+                        builder.setMessage("Nessun libro trovato");
+                        builder.setPositiveButton("Ok", (dialog, which) -> searchbar.setText(""));
+                        builder.show();
+                    }
+                    return true;
+                }
+
+
             }
             return false;
         });
+
+
+
+
     }
 
     private void initRecyclerview(ArrayList<Book> itemsBooks) {

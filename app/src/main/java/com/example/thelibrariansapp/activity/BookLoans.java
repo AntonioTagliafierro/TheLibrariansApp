@@ -1,5 +1,6 @@
 package com.example.thelibrariansapp.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -72,8 +73,9 @@ public class BookLoans extends AppCompatActivity {
 
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private void getBundle() {
-        object = (Book) getIntent().getSerializableExtra("object");
+            object = (Book) getIntent().getSerializableExtra("object");
             Glide.with(this).load(object.getImageUrl()).centerInside().into(ImageViewCopertinaLibro);
 
             textViewTitle.setText(object.getTitle());
