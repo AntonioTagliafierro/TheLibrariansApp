@@ -1,4 +1,4 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.example.thelibrariansapp.BookLoans;
+import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.models.Book;
 
 import java.util.ArrayList;

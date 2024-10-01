@@ -21,33 +21,33 @@
             android:exported="false" />
 
         <activity
-            android:name=".HomePageActivity"
+            android:name=".activity.HomePageActivity"
             android:exported="false" />
 
         <activity
-            android:name=".LoginActivityAdmin"
+            android:name=".activity.LoginActivityAdmin"
             android:exported="true">
         </activity>
         <activity
-            android:name=".CarrelloActivity"
+            android:name=".activity.CarrelloActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfiloActivity"
+            android:name=".activity.ProfiloActivity"
             android:exported="false" />
         <activity
-            android:name=".NavigationActivity"
+            android:name=".activity.NavigationActivity"
             android:exported="false" />
         <activity
-            android:name=".BookActivity"
+            android:name=".activity.BookActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".activity.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activity.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

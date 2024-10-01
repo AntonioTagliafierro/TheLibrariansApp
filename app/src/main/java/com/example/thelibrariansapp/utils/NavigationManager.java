@@ -1,7 +1,11 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.utils;
 
 import android.content.Context;
 import android.content.Intent;
+
+import com.example.thelibrariansapp.activity.CarrelloActivity;
+import com.example.thelibrariansapp.activity.HomeActivity;
+import com.example.thelibrariansapp.activity.ProfiloActivity;
 
 public class NavigationManager {
 

@@ -1,17 +1,17 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.text.method.PasswordTransformationMethod;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.thelibrariansapp.R;
 
 public class LoginActivityAdmin extends AppCompatActivity {
 EditText email,password;

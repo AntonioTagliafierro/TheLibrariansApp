@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.thelibrariansapp.activity.HomePageActivity;
 import com.example.thelibrariansapp.models.Book;
+import com.example.thelibrariansapp.adapters.RecommendedLoanAdapter;
+import com.example.thelibrariansapp.models.CardLoanPropertyDomain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

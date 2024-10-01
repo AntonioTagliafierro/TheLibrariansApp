@@ -1,9 +1,12 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.activity;
 
 import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.thelibrariansapp.utils.NavigationManager;
+import com.example.thelibrariansapp.R;
 
 public class NavigationActivity extends AppCompatActivity {
 

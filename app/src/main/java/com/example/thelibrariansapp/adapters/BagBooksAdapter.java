@@ -1,4 +1,4 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,18 +15,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.example.thelibrariansapp.R;
+import com.example.thelibrariansapp.activity.BookActivity;
 import com.example.thelibrariansapp.models.Book;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> {
+public class BagBooksAdapter extends RecyclerView.Adapter<BagBooksAdapter.MyViewHolder> {
 
     private Context context;
     private ArrayList<Book> books;
 
+
     // Corretto il costruttore
-    public BookAdapter(ArrayList<Book> listBook, Context context) {
+    public BagBooksAdapter(ArrayList<Book> listBook, Context context) {
         this.context = context;
         this.books = listBook; // Assegna correttamente la lista di libri
     }
@@ -77,6 +80,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> 
 
         public TextView bookTitle, bookIsbn, bookAuthor, bookGenre;
         public ImageView bookImg;
+        public ImageButton rimuoviBtn;
 
 
         public MyViewHolder(View itemView) {
@@ -86,6 +90,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> 
             bookIsbn = itemView.findViewById(R.id.bookIsbn);
             bookGenre = itemView.findViewById(R.id.bookGenre);
             bookImg = itemView.findViewById(R.id.bookImg);
+
 
         }
 
@@ -97,8 +102,11 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> 
             if (book.getImageUrl() == null) {
                 bookImg.setImageResource(R.drawable.ic_launcher_background);
             } else {
-                Glide.with(context).load(book.getImageUrl()).fitCenter().transform(new GranularRoundedCorners(30,30,0,0)).into(bookImg);
+                Glide.with(context).load(book.getImageUrl()).transform(new GranularRoundedCorners(30,30,0,0)).into(bookImg);
             }
         }
+
+
+
     }
 }

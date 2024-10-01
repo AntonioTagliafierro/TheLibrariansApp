@@ -9,8 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textViewBookNames"
@@ -22,19 +22,19 @@
         <EditText
             android:id="@+id/editTextBookName"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:hint="Titolo libro"
             android:inputType="text"
-            android:padding="4dp"/>
+            android:padding="4dp" />
     </LinearLayout>
 
     <!-- Riga per la data di inizio -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textViewStartDate"
@@ -46,19 +46,19 @@
         <EditText
             android:id="@+id/editTextStartDate"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:hint="Data inizio"
             android:inputType="date"
-            android:padding="4dp"/>
+            android:padding="4dp" />
     </LinearLayout>
 
     <!-- Riga per la data di fine -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textViewEndDate"
@@ -70,19 +70,19 @@
         <EditText
             android:id="@+id/editTextEndDate"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:hint="Data fine"
             android:inputType="date"
-            android:padding="4dp"/>
+            android:padding="4dp" />
     </LinearLayout>
 
     <!-- Riga per lo stato -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textViewStatus"
@@ -94,11 +94,11 @@
         <EditText
             android:id="@+id/editTextStatus"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:hint="Stato"
             android:inputType="text"
-            android:padding="4dp"/>
+            android:padding="4dp" />
     </LinearLayout>
 
 </LinearLayout>

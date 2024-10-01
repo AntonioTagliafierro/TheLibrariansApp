@@ -1,13 +1,15 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.thelibrariansapp.adapters.LoansAdapter;
+import com.example.thelibrariansapp.R;
+import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Loans;
 
 import java.util.ArrayList;

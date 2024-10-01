@@ -1,4 +1,4 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.thelibrariansapp.R;
+import com.example.thelibrariansapp.utils.SocketClient;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

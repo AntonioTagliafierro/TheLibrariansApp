@@ -1,4 +1,4 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.activity;
 
 
 
@@ -15,12 +15,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.example.thelibrariansapp.utils.CartManager;
+import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
 import com.example.thelibrariansapp.R;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 public class BookActivity extends AppCompatActivity {
 

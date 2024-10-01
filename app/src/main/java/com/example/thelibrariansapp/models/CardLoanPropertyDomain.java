@@ -1,4 +1,4 @@
-package com.example.thelibrariansapp;
+package com.example.thelibrariansapp.models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
