@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.media.MediaPlayer;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,8 @@ import com.example.thelibrariansapp.models.Book;
 import java.util.ArrayList;
 
 public class CarrelloActivity extends AppCompatActivity {
+
+    private MediaPlayer mediaPlayer;
 
     private ImageButton homeButton;
     private ImageButton carrelloButton;
@@ -48,6 +51,8 @@ public class CarrelloActivity extends AppCompatActivity {
         homeButton = findViewById(R.id.imgBtnHome);
         carrelloButton = findViewById(R.id.imgBtnCarrello);
         profiloButton = findViewById(R.id.imgBtnProfile);
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.suono_ordine);
 
         homeButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, HomeActivity.class);
@@ -134,8 +139,10 @@ public class CarrelloActivity extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 if ("Ordine avvenuto con successo!".equals(response)) {
                                     Toast.makeText(CarrelloActivity.this, "Ordine confermato per il libro: " + book.getIsbn(), Toast.LENGTH_SHORT).show();
-                                    prestiti++;
-
+                                    prestiti = client.getNLease("numprestiti", username);
+                                    if (mediaPlayer != null) {
+                                        mediaPlayer.start();
+                                    }
                                     // Aggiungi il libro alla lista dei libri da rimuovere
                                     booksToRemove.add(book);
                                 } else {
@@ -172,6 +179,15 @@ public class CarrelloActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Rilascia il MediaPlayer quando l'attività viene distrutta
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();

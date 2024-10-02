@@ -1,6 +1,7 @@
 package com.example.thelibrariansapp.activity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,7 +9,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,11 +23,18 @@ import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
 
 import java.util.ArrayList;
+import android.media.MediaPlayer;
+import android.content.SharedPreferences;
 
 public class HomeActivity extends AppCompatActivity {
 
+    SharedPreferences sharedPreferences;
+
+    private MediaPlayer mediaPlayer;
     private ArrayList<Book> bookList; // Memorizza la lista di libri
     private BookAdapter bookAdapter;
+
+    private String username; // Username dell'utente
 
     private ImageButton homeButton;
     private ImageButton carrelloButton;
@@ -53,11 +64,32 @@ public class HomeActivity extends AppCompatActivity {
         // Imposta il LayoutManager per RecyclerView
         books.setLayoutManager(new LinearLayoutManager(this));
 
+        // Inizializzazione SharedPreferences per recuperare lo username
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        username = sharedPreferences.getString("username", "default_value");
         // Gestione della navigazione nei pulsanti
         homeButton.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
         carrelloButton.setOnClickListener(v -> startActivity(new Intent(this, CarrelloActivity.class)));
         profiloButton.setOnClickListener(v -> startActivity(new Intent(this, ProfiloActivity.class)));
 
+        mediaPlayer = MediaPlayer.create(this, R.raw.filtra_libri);
+
+        // Ottieni la data corrente
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        // Ottieni la data dell'ultimo controllo da SharedPreferences
+        String lastCheckedDate = sharedPreferences.getString("lastCheckedDate", "");
+
+        // Confronta la data corrente con l'ultima data di controllo
+        if (!currentDate.equals(lastCheckedDate)) {
+            // Se la data è diversa, esegui checkDelay()
+            checkDelay();
+
+            // Aggiorna SharedPreferences con la nuova data
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("lastCheckedDate", currentDate);
+            editor.apply();
+        }
         // Gestione visibilità filtri e cerca
         filterBtn.setOnClickListener(new View.OnClickListener() {
             boolean isVisible = false;
@@ -96,6 +128,24 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    private void checkDelay() {
+
+        new Thread(() -> {
+            SocketClient client = new SocketClient();
+            String response = client.checkLoansDelay("checkloans", username);
+
+            runOnUiThread(() -> {
+                if ("Hai delle consegne in ritardo".equals(response)) {
+                    // Eseguire azione
+
+                } else {
+                    Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    }).start();
+    }
+
     private void loadBooksFromServer() {
         new Thread(() -> {
             SocketClient client = new SocketClient();
@@ -103,6 +153,9 @@ public class HomeActivity extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 if (bookList != null && !bookList.isEmpty()) {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.start();
+                    }
                     bookAdapter = new BookAdapter(bookList, HomeActivity.this);
                     books.setAdapter(bookAdapter);
                 } else {
@@ -143,11 +196,24 @@ public class HomeActivity extends AppCompatActivity {
             ArrayList<Book> finalFilteredBooks = filteredBooks;
             runOnUiThread(() -> {
                 if (finalFilteredBooks != null && !finalFilteredBooks.isEmpty()) {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.start();
+                    }
                     bookAdapter.updateBooks(finalFilteredBooks);
                 } else {
                     Toast.makeText(HomeActivity.this, "Nessun libro trovato per i criteri di ricerca", Toast.LENGTH_SHORT).show();
                 }
             });
         }).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Rilascia il MediaPlayer quando l'attività viene distrutta
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
