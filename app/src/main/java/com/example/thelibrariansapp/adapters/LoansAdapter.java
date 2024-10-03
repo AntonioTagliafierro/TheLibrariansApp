@@ -10,12 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.models.Loans;
+import com.example.thelibrariansapp.utils.SocketClient;
 
 import java.util.List;
 
 public class LoansAdapter extends RecyclerView.Adapter<LoansAdapter.LoanViewHolder> {
+
     private List<Loans> loansList;
     private Context context;
+    private SocketClient socketClient = new SocketClient();
+
 
     public LoansAdapter(List<Loans> loansList, Context context) {
         this.loansList = loansList;
@@ -31,10 +35,11 @@ public class LoansAdapter extends RecyclerView.Adapter<LoansAdapter.LoanViewHold
     @Override
     public void onBindViewHolder(LoanViewHolder holder, int position) {
         Loans loan = loansList.get(position);
-        holder.bookTitle.setText("Titolo libro: " + loan.getBooks().get(0).getTitle());
+        holder.bookTitle.setText("Titolo libro: " + loan.getBook().getTitle());
         holder.startDate.setText("Data inizio: " + loan.getStartDate().toString());
         holder.dueDate.setText("Data fine: " + loan.getDueDate().toString());
         holder.status.setText("Stato: " + loan.getStatus());
+
     }
 
     @Override

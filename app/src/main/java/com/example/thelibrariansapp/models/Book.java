@@ -43,6 +43,13 @@ public class Book implements Serializable {
         copyOnLease = in.readInt();
     }
 
+    public Book(String isbn, String title, String genre, String imageUrl) {
+        this.isbn = isbn;
+        this.title = title;
+        this.genre = genre;
+        this.imageUrl = imageUrl;
+    }
+
     // Calcola il numero disponibile di copie
     public int getAvailable() {
         return quantity - copyOnLease;

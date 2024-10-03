@@ -383,6 +383,7 @@ public class SocketClient {
     }
 
     public ArrayList<Book> getBagBooks(String type, String username) {
+
         Socket socket = null;
         DataOutputStream outputStream = null;
         BufferedReader inputStream = null;
@@ -532,13 +533,17 @@ public class SocketClient {
             String line;
             while ((line = inputStream.readLine()) != null && !line.equals("END")) {
                 String[] loanData = line.split(",");
-                if (loanData.length == 5) {  // Assumiamo 5 campi (username, libro, data inizio, data fine, stato)
+                if (loanData.length == 7) {  // Assumiamo 7 campi (isbn, data inizio, data fine, stato, titolo, genere, immagine)
                     Loans loan = new Loans();
-                    loan.setUser(new User(loanData[0]));
+                    loan.getBook().getIsbn();
                     // Parsing della data (esempio semplificato)
                     loan.setStartDate(new Date());  // Usa un parser appropriato per convertire le stringhe in Date
                     loan.setDueDate(new Date());
                     loan.setStatus(loanData[4]);
+                    loan.getBook().getTitle();
+                    loan.getBook().getGenre();
+                    loan.getBook().getImageUrl();
+
 
                     loansList.add(loan);  // Aggiungi il prestito alla lista
                 }
