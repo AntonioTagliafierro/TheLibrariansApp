@@ -4,10 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.models.Loans;
 import com.example.thelibrariansapp.utils.SocketClient;
@@ -19,7 +21,7 @@ public class LoansAdapter extends RecyclerView.Adapter<LoansAdapter.LoanViewHold
     private List<Loans> loansList;
     private Context context;
     private SocketClient socketClient = new SocketClient();
-
+    private ImageView bookCover;
 
     public LoansAdapter(List<Loans> loansList, Context context) {
         this.loansList = loansList;
@@ -35,11 +37,20 @@ public class LoansAdapter extends RecyclerView.Adapter<LoansAdapter.LoanViewHold
     @Override
     public void onBindViewHolder(LoanViewHolder holder, int position) {
         Loans loan = loansList.get(position);
+
+        // Popola i dati del prestito nel ViewHolder
         holder.bookTitle.setText("Titolo libro: " + loan.getBook().getTitle());
         holder.startDate.setText("Data inizio: " + loan.getStartDate().toString());
         holder.dueDate.setText("Data fine: " + loan.getDueDate().toString());
         holder.status.setText("Stato: " + loan.getStatus());
+        holder.isbn.setText("ISBN: " + loan.getBook().getIsbn());
+        holder.genre.setText("Genere: " + loan.getBook().getGenre());
 
+        // Caricamento dell'immagine del libro
+        Glide.with(context)
+                .load(loan.getBook().getImageUrl())
+                .centerInside()
+                .into(bookCover);
     }
 
     @Override
@@ -48,14 +59,20 @@ public class LoansAdapter extends RecyclerView.Adapter<LoansAdapter.LoanViewHold
     }
 
     public static class LoanViewHolder extends RecyclerView.ViewHolder {
-        TextView bookTitle, startDate, dueDate, status;
+        TextView bookTitle, startDate, dueDate, status, isbn, genre;
+        ImageView bookImage;
 
         public LoanViewHolder(View itemView) {
             super(itemView);
+
+            // Inizializza le view con i rispettivi ID
             bookTitle = itemView.findViewById(R.id.textViewBookNames);
             startDate = itemView.findViewById(R.id.textViewStartDate);
             dueDate = itemView.findViewById(R.id.textViewEndDate);
             status = itemView.findViewById(R.id.textViewStatus);
+            isbn = itemView.findViewById(R.id.textViewISBN);
+            genre = itemView.findViewById(R.id.textViewGenre);
+            bookImage = itemView.findViewById(R.id.imageViewBookCover);
         }
     }
 }

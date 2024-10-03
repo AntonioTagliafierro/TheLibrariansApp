@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp">
@@ -26,6 +26,60 @@
             android:layout_weight="1"
             android:hint="Titolo libro"
             android:inputType="text"
+            android:padding="4dp" />
+    </LinearLayout>
+
+    <!-- Aggiungere l'immagine del libro -->
+    <ImageView
+        android:id="@+id/imageViewBookCover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Copertina del libro"
+        android:scaleType="fitCenter"
+        android:layout_marginBottom="4dp"
+        app:srcCompat="@mipmap/ic_launcher"/>
+
+    <!-- Riga per l'ISBN -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewISBN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ISBN: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/editTextISBN"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:padding="4dp" />
+    </LinearLayout>
+
+    <!-- Riga per il genere -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewGenre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Genere: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/editTextGenre"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
             android:padding="4dp" />
     </LinearLayout>
 
