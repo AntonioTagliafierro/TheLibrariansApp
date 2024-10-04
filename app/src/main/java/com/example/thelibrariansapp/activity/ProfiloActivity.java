@@ -1,11 +1,15 @@
 package com.example.thelibrariansapp.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+
 
 
 import com.example.thelibrariansapp.R;
@@ -15,6 +19,9 @@ public class ProfiloActivity extends ImmersiveActivity {
     private ImageButton homeButton;
     private ImageButton carrelloButton;
     private ImageButton profiloButton;
+    private SharedPreferences sharedPreferences;
+    private String username;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +29,30 @@ public class ProfiloActivity extends ImmersiveActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profilo);
 
+
+        // Recupera lo username dalle SharedPreferences
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        username = sharedPreferences.getString("username", "default_value");
+        TextView usernameTextView = findViewById(R.id.usernameText);
+        usernameTextView.setText(username);
+
+        Button butt = findViewById(R.id.button);
+        butt.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfiloActivity.this, ManageBooksActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton ButtonBack = findViewById(R.id.imageButtonBack);
+        ButtonBack.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfiloActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //bottom menu
         ImageButton homeButton = findViewById(R.id.imgBtnHome);
@@ -42,5 +73,9 @@ public class ProfiloActivity extends ImmersiveActivity {
             Intent intent = new Intent(this, ProfiloActivity.class);
             startActivity(intent);
         });
+
+
+
+
     }
 }

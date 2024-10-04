@@ -3,19 +3,16 @@ package com.example.thelibrariansapp.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.media.MediaPlayer;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.thelibrariansapp.adapters.BagBooksAdapter;
-import com.example.thelibrariansapp.adapters.BookAdapter;
 import com.example.thelibrariansapp.utils.CartManager;
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.utils.SocketClient;
@@ -74,7 +71,7 @@ public class CarrelloActivity extends ImmersiveActivity {
         username = sharedPreferences.getString("username", "default_value");
 
         // Inizializza la RecyclerView prima di usarla
-        books = findViewById(R.id.booksRecyclerView); // Inizializza la RecyclerView
+        books = findViewById(R.id.recyclerViewLoans); // Inizializza la RecyclerView
         books.setLayoutManager(new LinearLayoutManager(this)); // Imposta il LayoutManager
 
         // Inizializza la lista e carica i libri nel carrello

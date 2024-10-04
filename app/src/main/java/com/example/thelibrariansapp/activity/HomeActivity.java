@@ -11,11 +11,9 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -24,10 +22,9 @@ import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 
 import java.util.ArrayList;
-import android.media.MediaPlayer;
+
 import android.content.SharedPreferences;
 
 public class HomeActivity extends ImmersiveActivity {
@@ -64,7 +61,7 @@ public class HomeActivity extends ImmersiveActivity {
         cercaBtn = findViewById(R.id.cercaBtn);
         filterBtn = findViewById(R.id.filterBtn);
         genereSpinner = findViewById(R.id.genereSpinner);
-        books = findViewById(R.id.booksRecyclerView);
+        books = findViewById(R.id.recyclerViewLoans);
 
         // Imposta il GridLayoutManager per RecyclerView con 2 colonne
         books.setLayoutManager(new GridLayoutManager(this, 2));
