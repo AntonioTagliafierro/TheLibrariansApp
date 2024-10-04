@@ -16,7 +16,7 @@ import com.example.thelibrariansapp.models.Loans;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManageBooksActivity extends AppCompatActivity {
+public class ManageBooksActivity extends ImmersiveActivity {
 
     private RecyclerView loansRecyclerView;
     private LoansAdapter loansAdapter;

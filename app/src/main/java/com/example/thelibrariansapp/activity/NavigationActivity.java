@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.thelibrariansapp.utils.NavigationManager;
 import com.example.thelibrariansapp.R;
 
-public class NavigationActivity extends AppCompatActivity {
+public class NavigationActivity extends ImmersiveActivity {
 
     private static final String TAG = "NavigationActivity"; // Aggiunta costante per il logging
 

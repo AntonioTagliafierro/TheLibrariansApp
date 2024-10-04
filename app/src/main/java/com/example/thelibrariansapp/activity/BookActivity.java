@@ -20,7 +20,7 @@ import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
 import com.example.thelibrariansapp.R;
 
-public class BookActivity extends AppCompatActivity {
+public class BookActivity extends ImmersiveActivity {
 
     private ImageButton backBtn;
     private Button aggiungiBtn;

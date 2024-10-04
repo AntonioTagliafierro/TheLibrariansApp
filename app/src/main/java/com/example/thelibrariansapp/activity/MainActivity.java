@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.utils.SocketClient;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ImmersiveActivity {
 
     private EditText usernameEditText, passwordEditText;
     private TextView registratiLbl;

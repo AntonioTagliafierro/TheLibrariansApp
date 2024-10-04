@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BookLoans extends AppCompatActivity {
+public class BookLoans extends ImmersiveActivity {
 
     private TextView textViewTitle, textViewAuthor,textViewCategory,textViewTotalCopies,
     textViewCopiesInUse,textViewISBN;

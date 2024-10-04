@@ -20,7 +20,7 @@ import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
 
-public class BookBagActivity extends AppCompatActivity {
+public class BookBagActivity extends ImmersiveActivity {
 
     private ImageButton backBtn;
     private Button rimuoviBtn;

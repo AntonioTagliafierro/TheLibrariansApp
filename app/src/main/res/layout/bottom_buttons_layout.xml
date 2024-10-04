@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- bottom_buttons_layout.xml -->
-
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parentConstraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-    <!-- Altri elementi della tua interfaccia possono andare qui -->
+
+
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -17,72 +17,67 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
+        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center">
 
         <!-- Pulsante Store -->
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/button_shape"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp">
 
             <ImageButton
                 android:id="@+id/imgBtnCarrello"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:backgroundTint="@color/lemon_cream"
                 android:clickable="true"
-                android:src="@android:drawable/btn_star" />
+                android:src="@drawable/ic_cart" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Carrello"
-                android:textColor="@color/black" />
         </LinearLayout>
 
+        <!-- Pulsante Home -->
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/button_shape"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp">
 
             <ImageButton
                 android:id="@+id/imgBtnHome"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:background="@android:color/transparent"
                 android:clickable="true"
-                android:src="@android:drawable/btn_star" />
+                android:src="@drawable/ic_home" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textColor="@color/black" />
         </LinearLayout>
 
         <!-- Pulsante Profilo -->
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/button_shape"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp">
 
             <ImageButton
                 android:id="@+id/imgBtnProfile"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:clickable="true"
-                android:src="@android:drawable/btn_star" />
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_account" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profilo"
-                android:textColor="@color/black" />
         </LinearLayout>
 
     </LinearLayout>

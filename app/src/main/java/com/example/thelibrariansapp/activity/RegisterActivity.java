@@ -16,7 +16,7 @@ import com.example.thelibrariansapp.utils.SocketClient;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends ImmersiveActivity {
 
     private EditText usernameEditText, passwordEditText, passwordEditText2;
     private Button registraBtn;
@@ -97,4 +97,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+
 }

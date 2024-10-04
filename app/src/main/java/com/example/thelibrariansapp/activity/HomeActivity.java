@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,24 +17,27 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.thelibrariansapp.adapters.BookAdapter;
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import android.media.MediaPlayer;
 import android.content.SharedPreferences;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends ImmersiveActivity {
 
     SharedPreferences sharedPreferences;
 
     private MediaPlayer mediaPlayer;
     private ArrayList<Book> bookList; // Memorizza la lista di libri
     private BookAdapter bookAdapter;
-
+    private GestureDetector gestureDetector;
     private String username; // Username dell'utente
 
     private ImageButton homeButton;
@@ -51,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
         // Inizializza le view
         homeButton = findViewById(R.id.imgBtnHome);
         carrelloButton = findViewById(R.id.imgBtnCarrello);
@@ -61,8 +66,18 @@ public class HomeActivity extends AppCompatActivity {
         genereSpinner = findViewById(R.id.genereSpinner);
         books = findViewById(R.id.booksRecyclerView);
 
-        // Imposta il LayoutManager per RecyclerView
-        books.setLayoutManager(new LinearLayoutManager(this));
+        // Imposta il GridLayoutManager per RecyclerView con 2 colonne
+        books.setLayoutManager(new GridLayoutManager(this, 2));
+
+
+        // Crea un adattatore per il tuo spinner
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.generi, // Sostituisci con il tuo array di stringhe
+                R.layout.spinner_item // Usa il layout personalizzato
+        );
+        adapter.setDropDownViewResource(R.layout.dropdown_item);
+        genereSpinner.setAdapter(adapter);
 
         // Inizializzazione SharedPreferences per recuperare lo username
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);

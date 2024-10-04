@@ -44,6 +44,8 @@
         android:layout_marginStart="90dp"
         android:paddingEnd="10dp"
         android:text="Titolo"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textColor="@color/navy"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView14"

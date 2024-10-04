@@ -23,7 +23,7 @@ import com.example.thelibrariansapp.models.Book;
 
 import java.util.ArrayList;
 
-public class CarrelloActivity extends AppCompatActivity {
+public class CarrelloActivity extends ImmersiveActivity {
 
     private MediaPlayer mediaPlayer;
 

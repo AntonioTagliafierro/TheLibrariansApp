@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lemon_cream"
-    tools:context=".View.RegisterActivity">
+    tools:context=".activity.RegisterActivity">
 
     <TextView
         android:id="@+id/registratiTitolo"
@@ -64,6 +64,7 @@
                 android:drawableTint="@color/navy"
                 android:hint="Username"
                 android:textColorHint="@color/navy"
+                android:textColor="@color/navy"
                 android:paddingStart="20sp"
                 android:textSize="@dimen/label_dimen"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -84,6 +85,7 @@
                 android:drawableTint="@color/navy"
                 android:hint="Password"
                 android:textColorHint="@color/navy"
+                android:textColor="@color/navy"
                 android:inputType="textPassword"
                 android:paddingStart="20sp"
                 android:textSize="@dimen/label_dimen"
@@ -103,6 +105,7 @@
                 android:drawableTint="@color/navy"
                 android:hint="Password"
                 android:textColorHint="@color/navy"
+                android:textColor="@color/navy"
                 android:inputType="textPassword"
                 android:paddingStart="20sp"
                 android:textSize="@dimen/label_dimen"

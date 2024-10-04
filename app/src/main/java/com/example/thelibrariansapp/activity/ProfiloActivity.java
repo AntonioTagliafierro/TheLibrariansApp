@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.thelibrariansapp.R;
 
-public class ProfiloActivity extends AppCompatActivity {
+public class ProfiloActivity extends ImmersiveActivity {
 
     private ImageButton homeButton;
     private ImageButton carrelloButton;

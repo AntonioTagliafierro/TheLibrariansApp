@@ -17,20 +17,17 @@
         android:theme="@style/Theme.TheLibrariansApp"
         tools:targetApi="31">
         <activity
+            android:name=".activity.ImmersiveActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.BookBagActivity"
             android:exported="false" />
         <activity
             android:name=".activity.BookLoans"
             android:exported="false" />
-
         <activity
             android:name=".activity.HomePageActivity"
             android:exported="false" />
-
-        <activity
-            android:name=".activity.LoginActivityAdmin"
-            android:exported="true">
-        </activity>
         <activity
             android:name=".activity.CarrelloActivity"
             android:exported="false" />

@@ -19,7 +19,7 @@ import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
 
 import java.util.ArrayList;
-public class  HomePageActivity extends AppCompatActivity {
+public class  HomePageActivity extends ImmersiveActivity {
 
     private RecyclerView.Adapter adapterRecommended;
     private  RecyclerView recyclerViewBooks;
@@ -70,7 +70,7 @@ public class  HomePageActivity extends AppCompatActivity {
             builder.setTitle("Attenzione");
             builder.setMessage("Sei sicuro di voler uscire?");
             builder.setPositiveButton("Si", (dialog, which) -> {
-                Intent intent = new Intent(HomePageActivity.this, LoginActivityAdmin.class);
+                Intent intent = new Intent(HomePageActivity.this, MainActivity.class);
                 startActivity(intent);
             });
             builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
