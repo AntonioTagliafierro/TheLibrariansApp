@@ -35,6 +35,9 @@
             android:name=".activity.ProfiloActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.ManageBooksActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.NavigationActivity"
             android:exported="false" />
         <activity
