@@ -9,12 +9,36 @@
     tools:context=".activity.ProfiloActivity">
 
 
+    <TextView
+        android:id="@+id/settingsText"
+        android:layout_width="209dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="116dp"
+        android:text="Impostazioni"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/imageButtonBack"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="86dp"
+        android:layout_height="98dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="68dp"
+        app:layout_constraintStart_toEndOf="@+id/settingsText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cogwheel" />
+
     <ImageButton
         android:id="@+id/imageButtonBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="116dp"
         android:layout_marginEnd="44dp"
         android:backgroundTint="@color/lemon_cream"
         android:src="@drawable/baseline_arrow_back_ios_24"
@@ -23,20 +47,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/navy"
         tools:ignore="SpeakableTextPresentCheck" />
-
-    <TextView
-        android:id="@+id/settingsText"
-        android:layout_width="209dp"
-        android:layout_height="68dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="70dp"
-        android:text="Impostazioni"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageButtonBack"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/usernameText"
@@ -86,16 +96,6 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="86dp"
-        android:layout_height="98dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toEndOf="@+id/settingsText"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/cogwheel" />
 
     <Button
         android:id="@+id/button"

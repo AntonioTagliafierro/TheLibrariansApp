@@ -50,6 +50,9 @@ public class Book implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    public Book() {
+    }
+
     // Calcola il numero disponibile di copie
     public int getAvailable() {
         return quantity - copyOnLease;

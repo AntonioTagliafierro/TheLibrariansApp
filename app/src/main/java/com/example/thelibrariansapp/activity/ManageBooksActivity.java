@@ -1,7 +1,11 @@
 package com.example.thelibrariansapp.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +18,7 @@ import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Loans;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ManageBooksActivity extends ImmersiveActivity {
@@ -30,6 +35,7 @@ public class ManageBooksActivity extends ImmersiveActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_books);
 
+
         // Inizializza la RecyclerView
         loansRecyclerView = findViewById(R.id.recyclerViewLoans);
         loansRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -41,7 +47,41 @@ public class ManageBooksActivity extends ImmersiveActivity {
         // Carica i prestiti dell'utente
         loadLoans();
 
+        //bottom menu
+        ImageButton homeButton = findViewById(R.id.imgBtnHome);
+        ImageButton carrelloButton = findViewById(R.id.imgBtnCarrello);
+        ImageButton profiloButton = findViewById(R.id.imgBtnProfile);
+
+        homeButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+        });
+
+        carrelloButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CarrelloActivity.class);
+            startActivity(intent);
+        });
+
+        profiloButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfiloActivity.class);
+            startActivity(intent);
+        });
+
+        ImageView ButtonBack = findViewById(R.id.backButton);
+        ButtonBack.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ManageBooksActivity.this, ProfiloActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
+
+
+
+
+
         private void loadLoans (){
             new Thread(new Runnable() {
                 @Override
@@ -54,7 +94,8 @@ public class ManageBooksActivity extends ImmersiveActivity {
                         @Override
                         public void run() {
                             loansAdapter = new LoansAdapter(loansList, ManageBooksActivity.this);
-                            loansRecyclerView.setAdapter(loansAdapter);
+                            loansAdapter.sortLoansList(); // Ordina i prestiti
+                            loansRecyclerView.setAdapter(loansAdapter); // Imposta l'adapter alla RecyclerView
                         }
                     });
                 }
