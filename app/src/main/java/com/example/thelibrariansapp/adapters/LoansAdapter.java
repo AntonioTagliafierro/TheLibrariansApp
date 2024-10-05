@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -72,13 +73,15 @@ public class LoansAdapter extends RecyclerView.Adapter<LoansAdapter.LoanViewHold
             Date dueDate2 = loan.getDueDate();
             Date currentDate = new Date();  // Ottieni la data corrente
 
+            //holder.status.setTextColor(ContextCompat.getColor(context, R.color.red));
+
             // Se lo stato è "attivo" e la data di scadenza è passata, imposta il colore in rosso
             if (loan.getStatus().equals("attivo") && dueDate2.before(currentDate)) {
                 holder.status.setTextColor(Color.RED);
             } else if (loan.getStatus().equals("attivo")) {
-                holder.status.setTextColor(Color.GREEN);  // Verde se attivo e non scaduto
+                holder.status.setTextColor(ContextCompat.getColor(context, R.color.navy));  // navy se attivo e non scaduto
             } else {
-                holder.status.setTextColor(Color.BLACK);  // Colore di default se non attivo
+                holder.status.setTextColor(Color.BLACK);  // Colore per libro consegnato
             }
         } catch (Exception e) {
             e.printStackTrace();

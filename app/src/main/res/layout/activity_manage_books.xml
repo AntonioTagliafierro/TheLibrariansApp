@@ -24,17 +24,15 @@
 
     <ScrollView
         android:id="@+id/scrollView5"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="413dp"
+        android:layout_height="646dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/rounded_cont_top"
         android:backgroundTint="@color/navy"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/icon_app"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toBottomOf="@+id/icon_app">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
