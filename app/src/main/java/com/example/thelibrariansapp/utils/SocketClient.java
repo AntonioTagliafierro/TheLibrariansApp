@@ -535,6 +535,8 @@ public class SocketClient {
                 String[] loanData = line.split(",");
                 if (loanData.length == 7) {  // Assumiamo 7 campi (isbn, data inizio, data fine, stato, titolo, genere, immagine)
                     Loans loan = new Loans();
+                    Book book = new Book();
+                    User user = new User();
 
                     // Parsing dei campi
                     loan.getBook().setIsbn(loanData[0]);
@@ -571,7 +573,7 @@ public class SocketClient {
         return loansList;
 
     }
-// recupera prestiti utente filtrati
+
     public ArrayList<Loans> getUserLoansByState(String type, String username, String stato) {
 
         Socket socket = null;
