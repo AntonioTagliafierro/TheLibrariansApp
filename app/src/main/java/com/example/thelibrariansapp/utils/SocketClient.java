@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -511,19 +513,17 @@ public class SocketClient {
         ArrayList<Loans> loansList = new ArrayList<>();
 
         try {
-
-            //test connessione
+            // Test connessione
             System.out.println("Tentativo di connessione a " + SERVER_IP + ":" + SERVER_PORT);
-            System.out.println("Request type: %s\n" + type);
-            System.out.println("Username: %s\n" + username);
+            System.out.println("Request type: " + type);
+            System.out.println("Username: " + username);
 
             // Connessione al server
             socket = new Socket(SERVER_IP, SERVER_PORT);
 
-
             // Invia la richiesta al server con il tipo e lo username
             outputStream = new DataOutputStream(socket.getOutputStream());
-            String request = type + ":" + username + ":\n";  // Richiesta al server
+            String request = type + ":" + username + ":\n";
             OutputStream os = socket.getOutputStream();
             os.write(request.getBytes());
             outputStream.flush();
@@ -535,23 +535,30 @@ public class SocketClient {
                 String[] loanData = line.split(",");
                 if (loanData.length == 7) {  // Assumiamo 7 campi (isbn, data inizio, data fine, stato, titolo, genere, immagine)
                     Loans loan = new Loans();
-                    loan.getBook().getIsbn();
-                    // Parsing della data (esempio semplificato)
-                    loan.setStartDate(new Date());  // Usa un parser appropriato per convertire le stringhe in Date
-                    loan.setDueDate(new Date());
+
+                    // Parsing dei campi
+                    loan.getBook().setIsbn(loanData[0]);
+
+                    // Parsing delle date
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    loan.setStartDate(sdf.parse(loanData[1]));
+                    loan.setDueDate(sdf.parse(loanData[2]));
+
                     loan.setStatus(loanData[3]);
                     loan.getBook().setTitle(loanData[4]);
                     loan.getBook().setGenre(loanData[5]);
                     loan.getBook().setImageUrl(loanData[6]);
 
-                    loan.getUser().setUsername(username); //setta user
+                    loan.getUser().setUsername(username); // Imposta lo username
 
-                    loansList.add(loan);  // Aggiungi il prestito alla lista
+                    // Aggiungi il prestito alla lista
+                    loansList.add(loan);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         } finally {
+            // Chiudi tutte le connessioni
             try {
                 if (outputStream != null) outputStream.close();
                 if (inputStream != null) inputStream.close();
@@ -562,6 +569,7 @@ public class SocketClient {
         }
 
         return loansList;
+
     }
 
     public ArrayList<Loans> getUserLoansByState(String type, String username, String stato) {
@@ -596,23 +604,30 @@ public class SocketClient {
                 String[] loanData = line.split(",");
                 if (loanData.length == 7) {  // Assumiamo 7 campi (isbn, data inizio, data fine, stato, titolo, genere, immagine)
                     Loans loan = new Loans();
-                    loan.getBook().getIsbn();
-                    // Parsing della data (esempio semplificato)
-                    loan.setStartDate(new Date());  // Usa un parser appropriato per convertire le stringhe in Date
-                    loan.setDueDate(new Date());
+
+                    // Parsing dei campi
+                    loan.getBook().setIsbn(loanData[0]);
+
+                    // Parsing delle date
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    loan.setStartDate(sdf.parse(loanData[1]));
+                    loan.setDueDate(sdf.parse(loanData[2]));
+
                     loan.setStatus(loanData[3]);
                     loan.getBook().setTitle(loanData[4]);
                     loan.getBook().setGenre(loanData[5]);
                     loan.getBook().setImageUrl(loanData[6]);
 
-                    loan.getUser().setUsername(username); //setta user
+                    loan.getUser().setUsername(username); // Imposta lo username
 
-                    loansList.add(loan);  // Aggiungi il prestito alla lista
+                    // Aggiungi il prestito alla lista
+                    loansList.add(loan);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         } finally {
+            // Chiudi tutte le connessioni
             try {
                 if (outputStream != null) outputStream.close();
                 if (inputStream != null) inputStream.close();
@@ -660,38 +675,30 @@ public class SocketClient {
                 String[] loanData = line.split(",");
                 if (loanData.length == 4) {  // Assumiamo 5 campi (username, libro, data inizio, data fine, stato)
                     Loans loan = new Loans();
+
                     loan.setUser(new User(loanData[0]));
 
-                    // Parsing della data (esempio semplificato)
-                    loan.setStartDate(new Date());  // Usa un parser appropriato per convertire le stringhe in Date
-                    loan.setDueDate(new Date());
+                    // Parsing delle date
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    loan.setStartDate(sdf.parse(loanData[1]));
+                    loan.setDueDate(sdf.parse(loanData[2]));
+
+                    loan.setStatus(loanData[3]);
                     loan.setStatus(loanData[3]);
 
-                    loansList.add(loan);  // Aggiungi il prestito alla lista
-
-                    // Stampa i dettagli del prestito
-                    System.out.println("Prestito aggiunto:");
-                    System.out.println(" - Utente: " + loan.getUser().getUsername());
-                    System.out.println(" - Data inizio: " + loan.getStartDate());
-                    System.out.println(" - Data fine: " + loan.getDueDate());
-                    System.out.println(" - Stato: " + loan.getStatus());
-                } else {
-                    System.out.println("Dati prestito non corretti: " + Arrays.toString(loanData));
+                    loansList.add(loan);
                 }
             }
-            System.out.println("Tutti i prestiti sono stati ricevuti.");
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
-            System.out.println("Errore durante la connessione o la lettura dei dati: " + e.getMessage());
         } finally {
+            // Chiudi tutte le connessioni
             try {
                 if (outputStream != null) outputStream.close();
                 if (inputStream != null) inputStream.close();
                 if (socket != null) socket.close();
-                System.out.println("Connessioni chiuse correttamente.");
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Errore durante la chiusura delle connessioni: " + e.getMessage());
             }
         }
 
@@ -736,38 +743,30 @@ public class SocketClient {
                 String[] loanData = line.split(",");
                 if (loanData.length == 4) {  // Assumiamo 5 campi (username, libro, data inizio, data fine, stato)
                     Loans loan = new Loans();
+
                     loan.setUser(new User(loanData[0]));
 
-                    // Parsing della data (esempio semplificato)
-                    loan.setStartDate(new Date());  // Usa un parser appropriato per convertire le stringhe in Date
-                    loan.setDueDate(new Date());
+                    // Parsing delle date
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    loan.setStartDate(sdf.parse(loanData[1]));
+                    loan.setDueDate(sdf.parse(loanData[2]));
+
+                    loan.setStatus(loanData[3]);
                     loan.setStatus(loanData[3]);
 
-                    loansList.add(loan);  // Aggiungi il prestito alla lista
-
-                    // Stampa i dettagli del prestito
-                    System.out.println("Prestito aggiunto:");
-                    System.out.println(" - Utente: " + loan.getUser().getUsername());
-                    System.out.println(" - Data inizio: " + loan.getStartDate());
-                    System.out.println(" - Data fine: " + loan.getDueDate());
-                    System.out.println(" - Stato: " + loan.getStatus());
-                } else {
-                    System.out.println("Dati prestito non corretti: " + Arrays.toString(loanData));
+                    loansList.add(loan);
                 }
             }
-            System.out.println("Tutti i prestiti sono stati ricevuti.");
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
-            System.out.println("Errore durante la connessione o la lettura dei dati: " + e.getMessage());
         } finally {
+            // Chiudi tutte le connessioni
             try {
                 if (outputStream != null) outputStream.close();
                 if (inputStream != null) inputStream.close();
                 if (socket != null) socket.close();
-                System.out.println("Connessioni chiuse correttamente.");
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Errore durante la chiusura delle connessioni: " + e.getMessage());
             }
         }
 

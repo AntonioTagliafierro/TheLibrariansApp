@@ -96,7 +96,12 @@ public class BookActivity extends ImmersiveActivity {
                     public void run() {
                         SocketClient client = new SocketClient();
                         String response = client.bookTODB("aggiungialcarrello", username, book.getIsbn());
-                        Toast.makeText(BookActivity.this, response, Toast.LENGTH_SHORT).show();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(BookActivity.this, response, Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
                     }
                 }).start();

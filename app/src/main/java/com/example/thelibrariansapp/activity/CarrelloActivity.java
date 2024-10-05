@@ -19,24 +19,27 @@ import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CarrelloActivity extends ImmersiveActivity {
 
     private MediaPlayer mediaPlayer;
-
     private ImageButton homeButton;
     private ImageButton carrelloButton;
     private ImageButton profiloButton;
     private RecyclerView books; // RecyclerView per mostrare i libri nel carrello
     private BagBooksAdapter bookAdapter; // Adapter per la RecyclerView
     private Button ordinaBtn; // Bottone per ordinare i libri
-    ArrayList<Book> bookList; // Lista di libri nel carrello
+    private ArrayList<Book> bookList; // Lista di libri nel carrello
     private SharedPreferences sharedPreferences; // SharedPreferences per recuperare lo username
     private String username; // Username dell'utente
     private int prestiti = 0; // Numero di prestiti attuali
     private final int max = 10; // Numero massimo di prestiti
     private int sizeCarrello = 0; // Dimensione del carrello
 
+    // Executor per gestire operazioni di rete
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class CarrelloActivity extends ImmersiveActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_carrello);
 
-        //bottom menu
+        // Inizializzazione bottom menu
         homeButton = findViewById(R.id.imgBtnHome);
         carrelloButton = findViewById(R.id.imgBtnCarrello);
         profiloButton = findViewById(R.id.imgBtnProfile);
@@ -84,64 +87,57 @@ public class CarrelloActivity extends ImmersiveActivity {
         ordinaBtn = findViewById(R.id.orderBtn); // Inizializza il bottone ordina
 
         // Thread per ottenere il numero di prestiti attuali dell'utente
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SocketClient client = new SocketClient();
-                prestiti = client.getNLease("numprestiti", username); // Ottieni il numero di prestiti
-            }
-        }).start();
+        executorService.execute(() -> {
+            SocketClient client = new SocketClient();
+            prestiti = client.getNLease("numprestiti", username); // Ottieni il numero di prestiti
+        });
 
         // Thread per ottenere i libri salvati nel carrello
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SocketClient client = new SocketClient();
-                ArrayList<Book> serverBooks = client.getBagBooks("bagbooks", username); // Ottieni i libri nel carrello
+        executorService.execute(() -> {
+            SocketClient client = new SocketClient();
+            ArrayList<Book> serverBooks = client.getBagBooks("bagbooks", username); // Ottieni i libri nel carrello
 
-                // Aggiorna l'interfaccia utente dopo aver ottenuto i libri
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (serverBooks != null && !serverBooks.isEmpty()) {
-                            bookList.clear(); // Pulisci la lista attuale prima di aggiungere i nuovi libri
-                            bookList.addAll(serverBooks);
-                            sizeCarrello = bookList.size();
+            // Aggiorna l'interfaccia utente dopo aver ottenuto i libri
+            runOnUiThread(() -> {
+                if (serverBooks != null && !serverBooks.isEmpty()) {
+                    bookList.clear(); // Pulisci la lista attuale prima di aggiungere i nuovi libri
+                    bookList.addAll(serverBooks);
+                    sizeCarrello = bookList.size();
 
-                            bookAdapter.notifyDataSetChanged(); // Notifica l'adapter dell'aggiornamento
-                        } else {
-                            Toast.makeText(CarrelloActivity.this, "Carrello vuoto", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }).start();
+                    bookAdapter.notifyDataSetChanged(); // Notifica l'adapter dell'aggiornamento
+                } else {
+                    Toast.makeText(CarrelloActivity.this, "Carrello vuoto", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
 
         // Controlla libri non più disponibili
         avvisaDisponibile(bookList);
 
-        // Aggiungi un listener per il bottone ordina
         ordinaBtn.setOnClickListener(v -> {
             if (prestiti + sizeCarrello <= max) { // Controlla se i prestiti non superano il massimo
-                new Thread(() -> {
-                    SocketClient client = new SocketClient();
+                executorService.execute(() -> {
                     ArrayList<Book> booksToRemove = new ArrayList<>(); // Lista temporanea per i libri da rimuovere
 
                     // Per ogni libro nel carrello, invia un ordine
                     for (Book book : bookList) {
                         if (book.getAvailable() > 0) {
+                            // Crea un nuovo SocketClient per ogni richiesta
+                            SocketClient client = new SocketClient();
                             String response = client.bookTODB("ordina", username, book.getIsbn());
 
                             // Gestisci la risposta nel thread principale
                             runOnUiThread(() -> {
                                 if ("Ordine avvenuto con successo!".equals(response)) {
                                     Toast.makeText(CarrelloActivity.this, "Ordine confermato per il libro: " + book.getIsbn(), Toast.LENGTH_SHORT).show();
-                                    prestiti = client.getNLease("numprestiti", username);
+                                    prestiti = prestiti + 1;
+
+                                    // Aggiungi il libro alla lista dei libri da rimuovere
+                                    booksToRemove.add(book); // Aggiungi il libro ordinato alla lista
+
                                     if (mediaPlayer != null) {
                                         mediaPlayer.start();
                                     }
-                                    // Aggiungi il libro alla lista dei libri da rimuovere
-                                    booksToRemove.add(book);
                                 } else {
                                     Toast.makeText(CarrelloActivity.this, "Errore per il libro: " + book.getIsbn() + " - " + response, Toast.LENGTH_SHORT).show();
                                 }
@@ -153,18 +149,19 @@ public class CarrelloActivity extends ImmersiveActivity {
                         }
                     }
 
-                    // Rimuovi i libri confermati dalla lista principale
+                    // Rimuovi i libri confermati dalla lista principale e aggiorna l'adapter
                     runOnUiThread(() -> {
                         bookList.removeAll(booksToRemove); // Rimuovi tutti i libri ordinati con successo
-                        bookAdapter.notifyDataSetChanged(); // Notifica l'adapter dell'aggiornamento
+                        bookAdapter.updateBooks(bookList); // Notifica l'adapter dell'aggiornamento
                     });
-                }).start();
+                });
             } else {
                 // Mostra un messaggio di errore se il numero di prestiti supera il massimo consentito
                 Toast.makeText(CarrelloActivity.this, "Numero prestiti consentito superato: hai " + prestiti +
                                 " prestiti attivi e nel carrello " + sizeCarrello + " libri, mentre il massimo è " + max,
                         Toast.LENGTH_LONG).show();
             }
+
         });
     }
 
@@ -184,17 +181,38 @@ public class CarrelloActivity extends ImmersiveActivity {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+        // Shutdown dell'executor service
+        executorService.shutdown();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        // Controlla se l'attività è stata aggiornata
-        if (getIntent().getBooleanExtra("updated", false)) {
-            // Aggiorna la lista dei libri nel carrello
-            bookList.clear(); // Pulisci la lista attuale
-            bookList.addAll(CartManager.getInstance().getBookList()); // Ottieni di nuovo i libri dal carrello
-            bookAdapter.notifyDataSetChanged(); // Notifica l'adapter dell'aggiornamento
-        }
+        // Ricarica la lista dei libri dal server o dal database
+        reloadBooks();
     }
 
+    private void reloadBooks() {
+        executorService.execute(() -> {
+            SocketClient client = new SocketClient();
+            ArrayList<Book> serverBooks = client.getBagBooks("bagbooks", username); // Ottieni i libri nel carrello
+
+            // Aggiorna l'interfaccia utente dopo aver ottenuto i libri
+            runOnUiThread(() -> {
+                if (serverBooks != null && !serverBooks.isEmpty()) {
+                    bookList.clear(); // Pulisci la lista attuale prima di aggiungere i nuovi libri
+                    bookList.addAll(serverBooks);
+                    sizeCarrello = bookList.size();
+
+                    bookAdapter.notifyDataSetChanged(); // Notifica l'adapter dell'aggiornamento
+                } else {
+                    bookList.clear(); // Pulisci la lista se non ci sono libri
+                    sizeCarrello = 0;
+                    bookAdapter.notifyDataSetChanged(); // Notifica l'adapter dell'aggiornamento
+                    Toast.makeText(CarrelloActivity.this, "Carrello vuoto", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
 }
+
