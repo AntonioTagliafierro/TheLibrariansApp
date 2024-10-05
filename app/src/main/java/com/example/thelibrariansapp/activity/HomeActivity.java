@@ -17,6 +17,7 @@ import java.util.Locale;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.example.thelibrariansapp.LateLoansDialogFragment;
 import com.example.thelibrariansapp.adapters.BookAdapter;
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.utils.SocketClient;
@@ -149,6 +150,8 @@ public class HomeActivity extends ImmersiveActivity {
             runOnUiThread(() -> {
                 if ("Hai delle consegne in ritardo".equals(response)) {
                     // Eseguire azione
+                    LateLoansDialogFragment dialog = new LateLoansDialogFragment();
+                    dialog.show(getSupportFragmentManager(), "LateLoansDialog");
 
                 } else {
                     Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
