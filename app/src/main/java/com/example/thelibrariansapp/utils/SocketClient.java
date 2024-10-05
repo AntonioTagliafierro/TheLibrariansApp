@@ -571,7 +571,7 @@ public class SocketClient {
         return loansList;
 
     }
-
+// recupera prestiti utente filtrati
     public ArrayList<Loans> getUserLoansByState(String type, String username, String stato) {
 
         Socket socket = null;
