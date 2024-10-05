@@ -535,8 +535,8 @@ public class SocketClient {
                 String[] loanData = line.split(",");
                 if (loanData.length == 7) {  // Assumiamo 7 campi (isbn, data inizio, data fine, stato, titolo, genere, immagine)
                     Loans loan = new Loans();
-                    Book book = new Book();
-                    User user = new User();
+                    loan.setBook(new Book()); // Inizializza un nuovo oggetto Book qui
+                    loan.setUser(new User()); // Assicurati di inizializzare anche l'oggetto User
 
                     // Parsing dei campi
                     loan.getBook().setIsbn(loanData[0]);
