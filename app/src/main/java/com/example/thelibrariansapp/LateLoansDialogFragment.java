@@ -15,7 +15,7 @@ public class LateLoansDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Prestiti in Ritardo")
-                .setMessage("Hai dei prestiti che sono in ritardo. Ti preghiamo di restituirli.")
+                .setMessage("Hai dei prestiti che sono in ritardo.")
                 .setPositiveButton("Gestisci Prestiti", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Chiudi il dialog e vai alla ManageBooksActivity

@@ -1,5 +1,6 @@
 package com.example.thelibrariansapp.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -54,6 +55,7 @@ public class HomeActivity extends ImmersiveActivity {
         setContentView(R.layout.activity_home);
 
 
+
         // Inizializza le view
         homeButton = findViewById(R.id.imgBtnHome);
         carrelloButton = findViewById(R.id.imgBtnCarrello);
@@ -96,13 +98,14 @@ public class HomeActivity extends ImmersiveActivity {
         // Confronta la data corrente con l'ultima data di controllo
         if (!currentDate.equals(lastCheckedDate)) {
             // Se la data è diversa, esegui checkDelay()
-            checkDelay();
+
 
             // Aggiorna SharedPreferences con la nuova data
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("lastCheckedDate", currentDate);
             editor.apply();
         }
+        checkDelay();
         // Gestione visibilità filtri e cerca
         filterBtn.setOnClickListener(new View.OnClickListener() {
             boolean isVisible = false;
@@ -148,7 +151,7 @@ public class HomeActivity extends ImmersiveActivity {
             String response = client.checkLoansDelay("checkloans", username);
 
             runOnUiThread(() -> {
-                if ("Hai delle consegne in ritardo".equals(response)) {
+                if ("Hai dei prestiti in ritardoEND".equals(response)) {
                     // Eseguire azione
                     LateLoansDialogFragment dialog = new LateLoansDialogFragment();
                     dialog.show(getSupportFragmentManager(), "LateLoansDialog");
