@@ -18,9 +18,9 @@ void *handle_client(void *socket_desc);
 void handle_register(PGconn *conn, const char *username, const char *password);
 int handle_login(PGconn *conn, const char *username, const char *password);
 void send_books_from_db(PGconn *conn, int sock);
-void send_books_from_db_key_genre(PGconn *conn, int sock, const char *field1, const char *field2);
-void send_books_from_db_key(PGconn *conn, int sock, const char *field1);
-void send_books_from_db_genre(PGconn *conn, int sock, const char *field1);
+void send_books_from_db_key_genre(PGconn *conn, int sock, const char *key, const char *genre);
+void send_books_from_db_key(PGconn *conn, int sock, const char *key);
+void send_books_from_db_genre(PGconn *conn, int sock, const char *genre);
 void add_to_bag(PGconn *conn, int sock, const char *username, const char *isbn);
 void rem_to_bag(PGconn *conn, int sock, const char *username, const char *isbn);
 void books_from_bag(PGconn *conn, int sock, const char *username);
@@ -40,6 +40,13 @@ void get_overdue_loans(PGconn *conn, int sock);
 void get_overdue_loans_by_isbn(PGconn *conn, int sock, const char *isbn);
 void get_loans_by_user_with_state(PGconn *conn, int sock, const char *username, const char *stato);
 void get_late_loans_by_user(PGconn *conn, int sock, const char *username);
+void send_books_avaiable_from_db(PGconn *conn,int sock);
+void send_books_avaiable_from_db_key_genre(PGconn *conn,int sock,const char *key, const char *genre);
+void send_books_avaiable_from_db_key(PGconn *conn,int sock,const char *key);
+void send_books_avaiable_from_db_genre(PGconn *conn,int sock,const char *genre);
+
+
+
 
 void get_late_loans_by_user(PGconn *conn, int sock, const char *username) {
     // Controlla la connessione a PostgreSQL
@@ -96,7 +103,6 @@ void get_late_loans_by_user(PGconn *conn, int sock, const char *username) {
     // Pulisci il risultato della query
     PQclear(res);
 }
-
 
 
 
@@ -855,6 +861,178 @@ int handle_login(PGconn *conn,const char *username, const char *password) {
     return login_success;
 }
 
+//Funzione per richiedere tutti i libri disponibili
+void send_books_avaiable_from_db(PGconn *conn, int sock)
+{
+        // Connessione a PostgreSQL
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+        return;
+    }
+
+    // Esegui la query per prendere i dettagli dei libri disponibili
+    PGresult *res = PQexec(conn, "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE quantita - copieprestate > 0");
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
+        PQclear(res);
+        return;
+    }
+
+    int rows = PQntuples(res);
+    char buffer[1024];
+    
+    // Itera sui risultati e invia i dati di ogni libro disponibile
+    for (int i = 0; i < rows; i++) {
+        snprintf(buffer, sizeof(buffer), "%s,%s,%s,%s,%s,%s,%s\n", 
+                 PQgetvalue(res, i, 0),  // isbn
+                 PQgetvalue(res, i, 1),  // titolo
+                 PQgetvalue(res, i, 2),  // genere
+                 PQgetvalue(res, i, 3),  // imageUrl
+                 PQgetvalue(res, i, 4),  // autore
+                 PQgetvalue(res, i, 5),  // quantita
+                 PQgetvalue(res, i, 6)); // copieprestate
+
+        send(sock, buffer, strlen(buffer), 0);
+    }
+
+    // Invia segnale di fine ("END")
+    send(sock, "END\n", 4, 0);
+
+    PQclear(res);
+}
+
+//Funzione per richiedere libri doppio filtro disponibili
+void send_books_avaiable_from_db_key_genre(PGconn *conn, int sock, const char *key, const char *genre)
+{
+    // Connessione a PostgreSQL
+if (PQstatus(conn) == CONNECTION_BAD) {
+    fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+    return;
+}
+
+// Esegui la query per prendere i dettagli dei libri che soddisfano il filtro e sono disponibili
+char query[BUFFER_SIZE];
+snprintf(query, sizeof(query), 
+    "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE titolo ILIKE '%%%s%%' AND genere = '%s' AND quantita - copieprestate > 0", 
+    key, genre);
+PGresult *res = PQexec(conn, query);
+if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+    fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
+    PQclear(res);
+    return;
+}
+
+int rows = PQntuples(res);
+char buffer[1024];
+
+// Itera sui risultati e invia i dati di ogni libro
+for (int i = 0; i < rows; i++) {
+    snprintf(buffer, sizeof(buffer), "%s,%s,%s,%s,%s,%s,%s\n", 
+             PQgetvalue(res, i, 0),  // isbn
+             PQgetvalue(res, i, 1),  // titolo
+             PQgetvalue(res, i, 2),  // genere
+             PQgetvalue(res, i, 3),  // imageUrl
+             PQgetvalue(res, i, 4),  // autore
+             PQgetvalue(res, i, 5),  // quantita
+             PQgetvalue(res, i, 6)); // copieprestate
+
+    send(sock, buffer, strlen(buffer), 0);
+}
+
+// Invia segnale di fine ("END")
+send(sock, "END\n", 4, 0);
+
+PQclear(res);
+}
+
+//Funzione per richiedere libri con keyword disponibili
+void send_books_avaiable_from_db_key(PGconn *conn, int sock, const char *key)
+{
+        // Connessione a PostgreSQL
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+
+        return;
+    }
+
+    // Esegui la query per prendere i dettagli dei libri
+    char query[BUFFER_SIZE];
+    snprintf(query, sizeof(query), "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE titolo ILIKE '%%%s%%' AND quantita - copieprestate > 0", key);
+    PGresult *res = PQexec(conn, query);
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
+        PQclear(res);
+
+        return;
+    }
+
+    int rows = PQntuples(res);
+    char buffer[1024];
+    
+    // Itera sui risultati e invia i dati di ogni libro
+    for (int i = 0; i < rows; i++) {
+        snprintf(buffer, sizeof(buffer), "%s,%s,%s,%s,%s,%s,%s\n", 
+                 PQgetvalue(res, i, 0),  // isbn
+                 PQgetvalue(res, i, 1),  // titolo
+                 PQgetvalue(res, i, 2),  // genere
+                 PQgetvalue(res, i, 3),  // imageUrl
+                 PQgetvalue(res, i, 4),  // autore
+                 PQgetvalue(res, i, 5),  // quantita
+                 PQgetvalue(res, i, 6)); // copieprestate
+
+        send(sock, buffer, strlen(buffer), 0);
+    }
+
+    // Invia segnale di fine ("END")
+    send(sock, "END\n", 4, 0);
+
+    PQclear(res);
+}
+
+//Funzione per richiedere libri con genere disponibili
+void send_books_avaiable_from_db_genre(PGconn *conn, int sock, const char *genre)
+{
+        // Connessione a PostgreSQL
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+
+        return;
+    }
+
+    // Esegui la query per prendere i dettagli dei libri
+    char query[BUFFER_SIZE];
+    snprintf(query, sizeof(query), "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE genere = '%s' AND quantita - copieprestate > 0", genre);
+    PGresult *res = PQexec(conn, query);
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
+        PQclear(res);
+
+        return;
+    }
+
+    int rows = PQntuples(res);
+    char buffer[1024];
+    
+    // Itera sui risultati e invia i dati di ogni libro
+    for (int i = 0; i < rows; i++) {
+        snprintf(buffer, sizeof(buffer), "%s,%s,%s,%s,%s,%s,%s\n", 
+                 PQgetvalue(res, i, 0),  // isbn
+                 PQgetvalue(res, i, 1),  // titolo
+                 PQgetvalue(res, i, 2),  // genere
+                 PQgetvalue(res, i, 3),  // imageUrl
+                 PQgetvalue(res, i, 4),  // autore
+                 PQgetvalue(res, i, 5),  // quantita
+                 PQgetvalue(res, i, 6)); // copieprestate
+
+        send(sock, buffer, strlen(buffer), 0);
+    }
+
+    // Invia segnale di fine ("END")
+    send(sock, "END\n", 4, 0);
+
+    PQclear(res);
+}
+
 //Funzione per richiedere tutti i libri
 void send_books_from_db(PGconn *conn, int sock) {
     // Connessione a PostgreSQL
@@ -898,7 +1076,7 @@ void send_books_from_db(PGconn *conn, int sock) {
 }
 
 //Funzione per richiedere libri doppio filtro
-void send_books_from_db_key_genre(PGconn *conn, int sock, const char *field1, const char *field2) {
+void send_books_from_db_key_genre(PGconn *conn, int sock, const char *key, const char *genre) {
     // Connessione a PostgreSQL
     if (PQstatus(conn) == CONNECTION_BAD) {
         fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
@@ -910,7 +1088,7 @@ void send_books_from_db_key_genre(PGconn *conn, int sock, const char *field1, co
     char query[BUFFER_SIZE];
     snprintf(query, sizeof(query), 
     "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE titolo ILIKE '%%%s%%' AND genere = '%s'", 
-    field1, field2);
+    key, genre);
     PGresult *res = PQexec(conn, query);    
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
@@ -944,7 +1122,7 @@ void send_books_from_db_key_genre(PGconn *conn, int sock, const char *field1, co
 }
 
 //Funzione per richiedere libri con keyword
-void send_books_from_db_key(PGconn *conn, int sock, const char *field1) {
+void send_books_from_db_key(PGconn *conn, int sock, const char *key) {
     // Connessione a PostgreSQL
     if (PQstatus(conn) == CONNECTION_BAD) {
         fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
@@ -954,7 +1132,7 @@ void send_books_from_db_key(PGconn *conn, int sock, const char *field1) {
 
     // Esegui la query per prendere i dettagli dei libri
     char query[BUFFER_SIZE];
-    snprintf(query, sizeof(query), "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE titolo ILIKE '%%%s%%'", field1);
+    snprintf(query, sizeof(query), "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE titolo ILIKE '%%%s%%'", key);
     PGresult *res = PQexec(conn, query);
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
@@ -988,7 +1166,7 @@ void send_books_from_db_key(PGconn *conn, int sock, const char *field1) {
 }
 
 //Funzione per richiedere libri con genere
-void send_books_from_db_genre(PGconn *conn, int sock, const char *field1) {
+void send_books_from_db_genre(PGconn *conn, int sock, const char *genre) {
     // Connessione a PostgreSQL
     if (PQstatus(conn) == CONNECTION_BAD) {
         fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
@@ -998,7 +1176,7 @@ void send_books_from_db_genre(PGconn *conn, int sock, const char *field1) {
 
     // Esegui la query per prendere i dettagli dei libri
     char query[BUFFER_SIZE];
-    snprintf(query, sizeof(query), "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE genere = '%s'", field1);
+    snprintf(query, sizeof(query), "SELECT isbn, titolo, genere, imageUrl, autore, quantita, copieprestate FROM books WHERE genere = '%s'", genre);
     PGresult *res = PQexec(conn, query);
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         fprintf(stderr, "SELECT failed: %s", PQerrorMessage(conn));
@@ -1139,6 +1317,18 @@ void *handle_client(void *socket_desc) {
             } else if (strcmp(request_type, "onlygenre") == 0){
                 //libri solo genere
                 send_books_from_db_genre(conn, sock, field1);
+            }  else if (strcmp(request_type,"allbooksavaiable") == 0) {
+                //recupera tutti libri disponibili
+                send_books_avaiable_from_db(conn, sock);
+            } else if (strcmp(request_type,"totalfilteravaiable") == 0) {
+                //recupera tutti libri disponibili con genere e keyword
+                send_books_avaiable_from_db_key_genre(conn, sock, field1, field2);
+            } else if (strcmp(request_type, "onlytitleavaiable") == 0){
+                //recupera tutti i libri disponibili con keyword
+                send_books_avaiable_from_db_key(conn, sock, field1);
+            } else if (strcmp(request_type, "onlygenreavaiable") == 0){
+                //recupera tutti i libri disponibili con genere
+                send_books_avaiable_from_db_genre(conn, sock, field1);
             } else if (strcmp(request_type, "aggiungialcarrello") == 0) {
                 //aggiunge libro al carrello utente
                 add_to_bag(conn, sock, field1, field2);
@@ -1193,8 +1383,7 @@ void *handle_client(void *socket_desc) {
             } else if (strcmp(request_type, "userloansdelay") == 0){
                 //recupera i prestiti in ritardo di consegna
                 get_late_loans_by_user(conn, sock, field1);
-            }
-            else {
+            } else {
 
                 char *response = "Tipo di richiesta non valido.";
                 send(sock, response, strlen(response), 0);
