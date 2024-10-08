@@ -97,14 +97,14 @@ public class HomeActivity extends ImmersiveActivity {
         // Confronta la data corrente con l'ultima data di controllo
         if (!currentDate.equals(lastCheckedDate)) {
             // Se la data è diversa, esegui checkDelay()
-
+            checkDelay();
 
             // Aggiorna SharedPreferences con la nuova data
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("lastCheckedDate", currentDate);
             editor.apply();
         }
-        checkDelay();
+
         // Gestione visibilità filtri e cerca
         filterBtn.setOnClickListener(new View.OnClickListener() {
             boolean isVisible = false;
