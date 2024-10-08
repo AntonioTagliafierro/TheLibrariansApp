@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -41,7 +42,7 @@ public class HomeActivity extends ImmersiveActivity {
     private ImageButton homeButton;
     private ImageButton carrelloButton;
     private ImageButton profiloButton;
-
+    private CheckBox disponibili;
     private EditText cercaEditText;
     private Button cercaBtn, filterBtn;
     private Spinner genereSpinner;
@@ -64,6 +65,7 @@ public class HomeActivity extends ImmersiveActivity {
         filterBtn = findViewById(R.id.filterBtn);
         genereSpinner = findViewById(R.id.genereSpinner);
         books = findViewById(R.id.recyclerViewLoans);
+        disponibili = findViewById(R.id.checkBox);
 
         // Imposta il GridLayoutManager per RecyclerView con 2 colonne
         books.setLayoutManager(new GridLayoutManager(this, 2));
@@ -115,10 +117,12 @@ public class HomeActivity extends ImmersiveActivity {
                     cercaBtn.setVisibility(View.GONE);
                     cercaEditText.setVisibility(View.GONE);
                     genereSpinner.setVisibility(View.GONE);
+                    disponibili.setVisibility(View.GONE);
                 } else {
                     cercaBtn.setVisibility(View.VISIBLE);
                     cercaEditText.setVisibility(View.VISIBLE);
                     genereSpinner.setVisibility(View.VISIBLE);
+                    disponibili.setVisibility(View.VISIBLE);
                 }
                 isVisible = !isVisible;
             }
@@ -191,24 +195,49 @@ public class HomeActivity extends ImmersiveActivity {
             String type;
             ArrayList<Book> filteredBooks = null;
 
-            if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
-                // Caso 1: EditText vuoto e nessun genere selezionato
-                type = "allbooks";
-                filteredBooks = client.getFilteredBooks(type);
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Nessun titolo o genere selezionato", Toast.LENGTH_SHORT).show());
-            } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
-                // Caso 2: Titolo presente e genere selezionato
-                type = "totalfilter:" + titolo + ":" + genere;
-                filteredBooks = client.getFilteredBooks(type);
-            } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
-                // Caso 3: Titolo presente, ma nessun genere selezionato
-                type = "onlytitle:" + titolo;
-                filteredBooks = client.getFilteredBooks(type);
-            } else if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
-                // Caso 4: Nessun titolo ma genere selezionato
-                type = "onlygenre:" + genere;
-                filteredBooks = client.getFilteredBooks(type);
+            if(disponibili.isActivated()) {
+                if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
+                    // Caso 1: EditText vuoto e nessun genere selezionato
+                    type = "allbooksavaiable";
+                    filteredBooks = client.getFilteredBooks(type);
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Nessun titolo o genere selezionato", Toast.LENGTH_SHORT).show());
+                } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
+                    // Caso 2: Titolo presente e genere selezionato
+                    type = "totalfilteravaiable:" + titolo + ":" + genere;
+                    filteredBooks = client.getFilteredBooks(type);
+                } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
+                    // Caso 3: Titolo presente, ma nessun genere selezionato
+                    type = "onlytitleavaiable:" + titolo;
+                    filteredBooks = client.getFilteredBooks(type);
+                } else if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
+                    // Caso 4: Nessun titolo ma genere selezionato
+                    type = "onlygenreavaiable:" + genere;
+                    filteredBooks = client.getFilteredBooks(type);
+                }
+            } else {
+
+                if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
+                    // Caso 1: EditText vuoto e nessun genere selezionato
+                    type = "allbooks";
+                    filteredBooks = client.getFilteredBooks(type);
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Nessun titolo o genere selezionato", Toast.LENGTH_SHORT).show());
+                } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
+                    // Caso 2: Titolo presente e genere selezionato
+                    type = "totalfilter:" + titolo + ":" + genere;
+                    filteredBooks = client.getFilteredBooks(type);
+                } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
+                    // Caso 3: Titolo presente, ma nessun genere selezionato
+                    type = "onlytitle:" + titolo;
+                    filteredBooks = client.getFilteredBooks(type);
+                } else if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
+                    // Caso 4: Nessun titolo ma genere selezionato
+                    type = "onlygenre:" + genere;
+                    filteredBooks = client.getFilteredBooks(type);
+
+
+                }
             }
+
 
             ArrayList<Book> finalFilteredBooks = filteredBooks;
             runOnUiThread(() -> {

@@ -56,6 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!-- Altri elementi del contenuto -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewLoans"
                 android:layout_width="0dp"
@@ -67,10 +68,11 @@
                 android:scrollbars="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cercaBtn" />
+                app:layout_constraintTop_toBottomOf="@+id/cercaBtn"
+                app:layout_constraintVertical_bias="1.0" />
 
-            <!-- Altri elementi del contenuto -->
             <Button
                 android:id="@+id/cercaBtn"
                 android:layout_width="wrap_content"
@@ -89,7 +91,7 @@
                 android:layout_width="233dp"
                 android:layout_height="41dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="16dp"
                 android:backgroundTint="@color/lemon_cream"
                 android:ems="10"
                 android:hint="Cerca"
@@ -105,7 +107,7 @@
                 android:layout_width="211dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="11dp"
+                android:layout_marginTop="10dp"
                 android:backgroundTint="@color/lemon_cream"
                 android:entries="@array/generi"
                 android:prompt="@string/seleziona_genere_prompt"
@@ -123,6 +125,19 @@
                 android:backgroundTint="@color/lemon_cream"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="2dp"
+                android:buttonTint="@color/lemon_cream"
+                android:text="Mostra Solo Disponibili"
+                android:textColor="@color/lemon_cream"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/genereSpinner" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
