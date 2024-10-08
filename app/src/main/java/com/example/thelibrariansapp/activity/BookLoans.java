@@ -3,6 +3,7 @@ package com.example.thelibrariansapp.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -46,6 +47,7 @@ public class BookLoans extends ImmersiveActivity {
         setContentView(R.layout.activity_book_loans);
 
 
+
         //Navigate to Homepage
         ImageButton BackHomepageButton = findViewById(R.id.imageButtonBack);
         BackHomepageButton.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +76,7 @@ public class BookLoans extends ImmersiveActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        initRecyclerviewRitardo(itemsLoansRitardo);
                         if (ItemsLoans != null && !ItemsLoans.isEmpty()) {
                             //Add element in the recycler view
 
@@ -86,7 +89,7 @@ public class BookLoans extends ImmersiveActivity {
             }
         }).start();
 
-        initRecyclerviewRitardo(itemsLoansRitardo);
+
 
 
         }
@@ -116,6 +119,9 @@ public class BookLoans extends ImmersiveActivity {
     @SuppressLint("SuspiciousIndentation")
     private void getBundle() {
             object = (Book) getIntent().getSerializableExtra("object");
+        int quantity = object.getQuantity();
+        System.out.println("la quantita è " + object.getQuantity());
+        Log.d("BookLoans", "Quantity: " + quantity);
             Glide.with(this).load(object.getImageUrl()).centerInside().into(ImageViewCopertinaLibro);
 
             textViewTitle.setText(object.getTitle());
@@ -124,6 +130,7 @@ public class BookLoans extends ImmersiveActivity {
             textViewISBN.setText(object.getIsbn());
             textViewTotalCopies.setText(String.valueOf(object.getQuantity()));
             textViewCopiesInUse.setText(String.valueOf(object.getCopyOnLease()));
+
         }
 
     private void initView() {
