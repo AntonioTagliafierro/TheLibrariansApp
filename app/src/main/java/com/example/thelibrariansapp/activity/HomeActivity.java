@@ -95,11 +95,16 @@ public class HomeActivity extends ImmersiveActivity {
         String lastCheckedDate = sharedPreferences.getString("lastCheckedDate", "");
 
         // Confronta la data corrente con l'ultima data di controllo
-        // Aggiorna SharedPreferences con la nuova data
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("lastCheckedDate", currentDate);
-        editor.apply();
-        checkDelay(lastCheckedDate, currentDate);
+        if (!currentDate.equals(lastCheckedDate)) {
+            // Se la data è diversa, esegui checkDelay()
+            checkDelay();
+
+            // Aggiorna SharedPreferences con la nuova data
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("lastCheckedDate", currentDate);
+            editor.apply();
+        }
+
         // Gestione visibilità filtri e cerca
         filterBtn.setOnClickListener(new View.OnClickListener() {
             boolean isVisible = false;
@@ -138,12 +143,11 @@ public class HomeActivity extends ImmersiveActivity {
         }
     }
 
-    private void checkDelay(String lastCheckedDate, String currentDate) {
+    private void checkDelay() {
 
         new Thread(() -> {
             SocketClient client = new SocketClient();
             String response = client.checkLoansDelay("checkloans", username);
-
 
             runOnUiThread(() -> {
                 if ("Hai dei prestiti in ritardoEND".equals(response)) {
@@ -152,14 +156,7 @@ public class HomeActivity extends ImmersiveActivity {
                     dialog.show(getSupportFragmentManager(), "LateLoansDialog");
 
                 } else {
-
-                    if (!currentDate.equals(lastCheckedDate)) {
-                        // Se la data è diversa, esegui checkDelay()
-                        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
-
-
-                    }
-
+                    Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
                 }
             });
 
