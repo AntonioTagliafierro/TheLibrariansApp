@@ -77,14 +77,15 @@ public class LoansAdapter extends RecyclerView.Adapter<LoansAdapter.LoanViewHold
 
             // Se lo stato è "attivo" e la data di scadenza è passata, imposta il colore in rosso
             if (loan.getStatus().equals("attivo") && dueDate2.before(currentDate)) {
-                holder.status.setText("RITARDO DI CONSEGNA");
+                holder.status.setText("IN RITARDO");
                 holder.status.setTextColor(Color.RED);
             } else if (loan.getStatus().equals("attivo")) { // navy se IN USO e non scaduto
-                holder.status.setText("IN USO");
+                holder.status.setText("       IN USO");
                 holder.status.setTextColor(ContextCompat.getColor(context, R.color.navy));
             } else {
                 holder.status.setText("CONSEGNATO");
                 holder.status.setTextColor(Color.BLACK);  // Colore per libro consegnato
+                holder.buttonReturnBook.setVisibility(View.INVISIBLE);
             }
         } catch (Exception e) {
             e.printStackTrace();

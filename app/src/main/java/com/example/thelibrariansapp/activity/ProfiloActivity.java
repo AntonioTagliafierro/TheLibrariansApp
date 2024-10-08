@@ -45,14 +45,6 @@ public class ProfiloActivity extends ImmersiveActivity {
             }
         });
 
-        ImageButton ButtonBack = findViewById(R.id.imageButtonBack);
-        ButtonBack.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfiloActivity.this, HomeActivity.class);
-                startActivity(intent);
-            }
-        });
 
         //tasto di uscita
         Button ButtonEsci = findViewById(R.id.esciButton);

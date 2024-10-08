@@ -105,6 +105,9 @@ public class BookActivity extends ImmersiveActivity {
 
                     }
                 }).start();
+                Intent intent = new Intent(BookActivity.this, HomeActivity.class);
+                startActivity(intent);
+
             }
         });
 

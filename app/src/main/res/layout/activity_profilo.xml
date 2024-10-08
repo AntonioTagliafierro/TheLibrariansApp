@@ -6,60 +6,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lemon_cream"
+    android:fitsSystemWindows="true"
     tools:context=".activity.ProfiloActivity">
 
 
-    <TextView
-        android:id="@+id/settingsText"
-        android:layout_width="209dp"
-        android:layout_height="68dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="116dp"
-        android:text="Impostazioni"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageButtonBack"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="85dp"
+        android:layout_marginBottom="68dp"
+        android:backgroundTint="@color/navy"
+        android:background="@drawable/rounded_cont_top"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="86dp"
-        android:layout_height="98dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="68dp"
-        app:layout_constraintStart_toEndOf="@+id/settingsText"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/cogwheel" />
 
-    <ImageButton
-        android:id="@+id/imageButtonBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+    <TextView
+        android:id="@+id/settingsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="116dp"
-        android:layout_marginEnd="44dp"
-        android:backgroundTint="@color/lemon_cream"
-        android:src="@drawable/baseline_arrow_back_ios_24"
-        app:layout_constraintEnd_toStartOf="@+id/settingsText"
+        android:layout_marginTop="16dp"
+        android:text="Account"
+        android:textAlignment="center"
+        android:textColor="@color/navy"
+        android:textSize="@dimen/title_dimen"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/navy"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/usernameText"
-        android:layout_width="231dp"
-        android:layout_height="55dp"
-        android:layout_marginBottom="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="180dp"
         android:text="Nome Utente"
         android:textAlignment="center"
-        android:textSize="34sp"
+        android:textColor="@color/lemon_cream"
+        android:textSize="40dp"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
     <Button
         android:id="@+id/esciButton"
@@ -68,7 +68,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="60dp"
         android:backgroundTint="#EF1000"
         android:text="Esci"
         android:textSize="24sp"
@@ -103,8 +103,9 @@
         android:layout_height="57dp"
         android:layout_marginStart="21dp"
         android:layout_marginBottom="36dp"
-        android:backgroundTint="@color/navy"
+        android:backgroundTint="@color/lemon_cream"
         android:text="Storico prestiti"
+        android:textColor="@color/navy"
         android:textSize="30dp"
         app:layout_constraintBottom_toTopOf="@+id/esciButton"
         app:layout_constraintStart_toStartOf="parent" />
