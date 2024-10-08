@@ -144,5 +144,28 @@ public class BookLoans extends ImmersiveActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Esegui un nuovo fetch dei dati quando l'attività riprende
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Ricarica i prestiti dal server
+                itemsLoansRitardo = client.getBookLoans("overdueloansbyisbn", object.getIsbn());
+
+                // Aggiorna la RecyclerView nell'interfaccia utente
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Ricarica la lista dei prestiti in ritardo
+                        initRecyclerviewRitardo(itemsLoansRitardo);
+                    }
+                });
+            }
+        }).start();
+    }
+
 
 }
