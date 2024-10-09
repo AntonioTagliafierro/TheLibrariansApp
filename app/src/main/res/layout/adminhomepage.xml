@@ -52,8 +52,8 @@
 
             <EditText
                 android:id="@+id/Searchbar"
-                android:layout_width="375dp"
-                android:layout_height="55dp"
+                android:layout_width="356dp"
+                android:layout_height="56dp"
                 android:background="@drawable/searchbar"
                 android:drawableStart="@drawable/baseline_search_24"
                 android:drawableEnd="@drawable/baseline_cancel_24"
