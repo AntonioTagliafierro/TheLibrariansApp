@@ -16,20 +16,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.thelibrariansapp.R;
-import com.example.thelibrariansapp.adapters.BookAdapter;
 import com.example.thelibrariansapp.adapters.RecommendedLoanAdapter;
 import com.example.thelibrariansapp.models.Book;
 import com.example.thelibrariansapp.models.Loans;
 import com.example.thelibrariansapp.utils.SocketClient;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 public class BookLoans extends ImmersiveActivity {
 
-    private TextView textViewTitle, textViewAuthor,textViewCategory,textViewTotalCopies,
-    textViewCopiesInUse,textViewISBN;
+    private TextView textViewTitle, textViewAuthor, textViewCategory, textViewTotalCopies,
+            textViewCopiesInUse, textViewISBN;
     private ImageView ImageViewCopertinaLibro;
     private Book object;
 
@@ -38,15 +35,13 @@ public class BookLoans extends ImmersiveActivity {
 
     SocketClient client = new SocketClient();
 
-    private RecyclerView.Adapter adapterRecommended,adapterRecommendedRitardo;
-    private  RecyclerView recyclerViewLoans,recyclerViewLoansRitardo;
+    private RecyclerView.Adapter adapterRecommended, adapterRecommendedRitardo;
+    private RecyclerView recyclerViewLoans, recyclerViewLoansRitardo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_loans);
-
-
 
         //Navigate to Homepage
         ImageButton BackHomepageButton = findViewById(R.id.imageButtonBack);
@@ -59,27 +54,30 @@ public class BookLoans extends ImmersiveActivity {
             }
         });
 
-        //Information of the book
+        // Information of the book
         initView();
         getBundle();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SocketClient client = new SocketClient();
+                // Ottieni la lista di prestiti attivi e in ritardo dal server
+                ItemsLoans = client.getBookLoans("loansbyisbnnotdelivered", object.getIsbn());
+                itemsLoansRitardo = client.getBookLoans("overdueloansbyisbn", object.getIsbn());
 
-                // Ottieni la lista di libri dal server
-                ItemsLoans = client.getBookLoans("loansbyisbnnotdelivered",object.getIsbn());
-                itemsLoansRitardo = client.getBookLoans("overdueloansbyisbn",object.getIsbn());
+                // Aggiungi log per verificare il contenuto delle liste
+                Log.d("BookLoans", "Prestiti attivi: " + ItemsLoans.size() + " " + ItemsLoans.toString());
+                Log.d("BookLoans", "Prestiti in ritardo: " + itemsLoansRitardo.size() + " " + itemsLoansRitardo.toString());
 
                 // Aggiorna l'interfaccia utente
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        // Aggiorna i prestiti in ritardo
                         initRecyclerviewRitardo(itemsLoansRitardo);
-                        if (ItemsLoans != null && !ItemsLoans.isEmpty()) {
-                            //Add element in the recycler view
 
+                        if (ItemsLoans != null && !ItemsLoans.isEmpty()) {
+                            // Aggiungi i prestiti attivi nel RecyclerView
                             initRecyclerview(ItemsLoans);
                         } else {
                             Toast.makeText(BookLoans.this, "Non ci sono prestiti attivi per questo libro", Toast.LENGTH_SHORT).show();
@@ -88,50 +86,43 @@ public class BookLoans extends ImmersiveActivity {
                 });
             }
         }).start();
-
-
-
-
-        }
-
-
+    }
 
     private void initRecyclerview(ArrayList<Loans> itemsLoans) {
-        //Add element in the recycler view
+        Log.d("BookLoans", "Prestiti attivi: " + itemsLoans.size());
         recyclerViewLoans = findViewById(R.id.recyclerViewLoans);
         recyclerViewLoans.setHasFixedSize(true);
         recyclerViewLoans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         adapterRecommended = new RecommendedLoanAdapter(itemsLoans);
         recyclerViewLoans.setAdapter(adapterRecommended);
 
+
     }
 
     private void initRecyclerviewRitardo(ArrayList<Loans> itemsLoansRitardo) {
-        //Add element in the recycler view
+        Log.d("BookLoans", "Prestiti in ritardo: " + itemsLoansRitardo.size());
         recyclerViewLoansRitardo = findViewById(R.id.recyclerViewLoansRitardo);
         recyclerViewLoansRitardo.setHasFixedSize(true);
         recyclerViewLoansRitardo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         adapterRecommendedRitardo = new RecommendedLoanAdapter(itemsLoansRitardo);
         recyclerViewLoansRitardo.setAdapter(adapterRecommendedRitardo);
 
+
     }
 
     @SuppressLint("SuspiciousIndentation")
     private void getBundle() {
-            object = (Book) getIntent().getSerializableExtra("object");
-        int quantity = object.getQuantity();
-        System.out.println("la quantita è " + object.getQuantity());
-        Log.d("BookLoans", "Quantity: " + quantity);
-            Glide.with(this).load(object.getImageUrl()).centerInside().into(ImageViewCopertinaLibro);
+        object = (Book) getIntent().getSerializableExtra("object");
 
-            textViewTitle.setText(object.getTitle());
-            textViewAuthor.setText(object.getAuthor());
-            textViewCategory.setText(object.getGenre());
-            textViewISBN.setText(object.getIsbn());
-            textViewTotalCopies.setText(String.valueOf(object.getQuantity()));
-            textViewCopiesInUse.setText(String.valueOf(object.getCopyOnLease()));
+        Glide.with(this).load(object.getImageUrl()).centerInside().into(ImageViewCopertinaLibro);
 
-        }
+        textViewTitle.setText(object.getTitle());
+        textViewAuthor.setText(object.getAuthor());
+        textViewCategory.setText(object.getGenre());
+        textViewISBN.setText(object.getIsbn());
+        textViewTotalCopies.setText(String.valueOf(object.getQuantity()));
+        textViewCopiesInUse.setText(String.valueOf(object.getCopyOnLease()));
+    }
 
     private void initView() {
         textViewTitle = findViewById(R.id.textViewTitolo);
@@ -141,7 +132,6 @@ public class BookLoans extends ImmersiveActivity {
         textViewTotalCopies = findViewById(R.id.textViewTotalCopies);
         textViewCopiesInUse = findViewById(R.id.textViewCopiesInUse);
         ImageViewCopertinaLibro = findViewById(R.id.imageViewCopertinaLibro);
-
     }
 
     @Override
@@ -152,20 +142,27 @@ public class BookLoans extends ImmersiveActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // Ricarica i prestiti dal server
+                // Ricarica sia i prestiti attivi che quelli in ritardo dal server
+                ItemsLoans = client.getBookLoans("loansbyisbnnotdelivered", object.getIsbn());
                 itemsLoansRitardo = client.getBookLoans("overdueloansbyisbn", object.getIsbn());
 
                 // Aggiorna la RecyclerView nell'interfaccia utente
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // Ricarica la lista dei prestiti in ritardo
+                        // Aggiorna i prestiti normali (attivi)
+                        if (ItemsLoans != null && !ItemsLoans.isEmpty()) {
+                            initRecyclerview(ItemsLoans);
+                        } else {
+                            Toast.makeText(BookLoans.this, "Non ci sono prestiti attivi per questo libro", Toast.LENGTH_SHORT).show();
+                        }
+
+                        // Aggiorna i prestiti in ritardo
                         initRecyclerviewRitardo(itemsLoansRitardo);
                     }
                 });
             }
         }).start();
     }
+    }
 
-
-}

@@ -6,27 +6,24 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.thelibrariansapp.R;
-import com.example.thelibrariansapp.adapters.BookAdapter;
 import com.example.thelibrariansapp.adapters.RecommendedBookAdapter;
 import com.example.thelibrariansapp.utils.SocketClient;
 import com.example.thelibrariansapp.models.Book;
 
 import java.util.ArrayList;
-public class  HomePageActivity extends ImmersiveActivity {
+
+public class HomePageActivity extends ImmersiveActivity {
 
     private RecyclerView.Adapter adapterRecommended;
-    private  RecyclerView recyclerViewBooks;
+    private RecyclerView recyclerViewBooks;
     private ImageButton exit;
-
     private EditText searchbar;
-
     private ArrayList<Book> ItemsBooks = new ArrayList<>();
 
     private SocketClient socketClient = new SocketClient();
@@ -41,17 +38,15 @@ public class  HomePageActivity extends ImmersiveActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SocketClient client = new SocketClient();
-
-                // Ottieni la lista di libri dal server
-                ArrayList<Book> ItemsBooks = socketClient.getAllBooks("allbooks");
+                // Usa la variabile membro ItemsBooks
+                ItemsBooks = socketClient.getAllBooks("allbooks");
 
                 // Aggiorna l'interfaccia utente
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (ItemsBooks != null && !ItemsBooks.isEmpty()) {
-                            //Add element in the recycler view
+                            // Aggiungi elementi alla RecyclerView
                             initRecyclerview(ItemsBooks);
                         } else {
                             Toast.makeText(HomePageActivity.this, "Nessun libro trovato", Toast.LENGTH_SHORT).show();
@@ -61,9 +56,7 @@ public class  HomePageActivity extends ImmersiveActivity {
             }
         }).start();
 
-
-
-        //Exit button
+        // Exit button
         exit = findViewById(R.id.Exit_button);
         exit.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(HomePageActivity.this);
@@ -77,7 +70,7 @@ public class  HomePageActivity extends ImmersiveActivity {
             builder.show();
         });
 
-        //Search bar
+        // Search bar
         searchbar = findViewById(R.id.Searchbar);
         // Detect touch on drawableEnd (the clear icon)
         searchbar.setOnTouchListener((v, event) -> {
@@ -89,22 +82,18 @@ public class  HomePageActivity extends ImmersiveActivity {
                     return true;
                 }
 
-                //Check if the touch was on the drawableStart
+                // Check if the touch was on the drawableStart
                 if (event.getRawX() <= (searchbar.getLeft() + searchbar.getCompoundDrawables()[0].getBounds().width())) {
-                    ArrayList<Book> BookIsbn = socketClient.getBooksByIsbn(searchbar.getText().toString());
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            SocketClient client = new SocketClient();
-
-                            // Ottieni la lista di libri dal server
                             ArrayList<Book> BookIsbn = socketClient.getBooksByIsbn(searchbar.getText().toString());
 
                             // Aggiorna l'interfaccia utente
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (BookIsbn.size() > 0) {
+                                    if (BookIsbn != null && !BookIsbn.isEmpty()) {
                                         Intent intent = new Intent(HomePageActivity.this, BookLoans.class);
                                         intent.putExtra("object", BookIsbn.get(0));
                                         startActivity(intent);
@@ -122,20 +111,14 @@ public class  HomePageActivity extends ImmersiveActivity {
 
                     return true;
                 }
-
-
             }
             return false;
         });
-
-
-
-
     }
 
     private void initRecyclerview(ArrayList<Book> itemsBooks) {
-        recyclerViewBooks= findViewById(R.id.recyclerViewBooks);
-        recyclerViewBooks.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        recyclerViewBooks = findViewById(R.id.recyclerViewBooks);
+        recyclerViewBooks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         adapterRecommended = new RecommendedBookAdapter(itemsBooks);
         recyclerViewBooks.setAdapter(adapterRecommended);
     }
