@@ -200,7 +200,6 @@ public class HomeActivity extends ImmersiveActivity {
                     // Caso 1: EditText vuoto e nessun genere selezionato
                     type = "allbooksavaiable";
                     filteredBooks = client.getFilteredBooks(type);
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Nessun titolo o genere selezionato", Toast.LENGTH_SHORT).show());
                 } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
                     // Caso 2: Titolo presente e genere selezionato
                     type = "totalfilteravaiable:" + titolo + ":" + genere;
@@ -220,7 +219,6 @@ public class HomeActivity extends ImmersiveActivity {
                     // Caso 1: EditText vuoto e nessun genere selezionato
                     type = "allbooks";
                     filteredBooks = client.getFilteredBooks(type);
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Nessun titolo o genere selezionato", Toast.LENGTH_SHORT).show());
                 } else if (!titolo.isEmpty() && genereSpinner.getSelectedItemPosition() != 0) {
                     // Caso 2: Titolo presente e genere selezionato
                     type = "totalfilter:" + titolo + ":" + genere;
