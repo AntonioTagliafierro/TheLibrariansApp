@@ -195,7 +195,7 @@ public class HomeActivity extends ImmersiveActivity {
             String type;
             ArrayList<Book> filteredBooks = null;
 
-            if(disponibili.isActivated()) {
+            if(disponibili.isChecked()) {
                 if (titolo.isEmpty() && genereSpinner.getSelectedItemPosition() == 0) {
                     // Caso 1: EditText vuoto e nessun genere selezionato
                     type = "allbooksavaiable";
