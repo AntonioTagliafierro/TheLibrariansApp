@@ -72,10 +72,10 @@ public class BookActivity extends ImmersiveActivity {
         bookIsbn.setText(book.getIsbn());
 
         if (book.getAvailable() < 1){
-            aggiungiBtn.setActivated(false);
+            aggiungiBtn.setClickable(false);
             aggiungiBtn.setText("Non disponibile");
         } else {
-            aggiungiBtn.setActivated(true);
+            aggiungiBtn.setClickable(true);
             aggiungiBtn.setText("Aggiungi al carrello");
         }
 

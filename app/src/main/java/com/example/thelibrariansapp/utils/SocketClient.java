@@ -397,17 +397,32 @@ public class SocketClient {
 
         // Esegui l'operazione in un thread separato
         new Thread(() -> {
-            try (Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-                 DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-                 BufferedReader inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+            Socket socket = null;
+            DataOutputStream outputStream = null;
+            BufferedReader inputStream = null;
 
+            try {
+                // Test connessione
+                System.out.println("Tentativo di connessione a " + SERVER_IP + ":" + SERVER_PORT);
+                System.out.println("Request type: " + type);
+
+                // Connessione al server
+                socket = new Socket(SERVER_IP, SERVER_PORT);
                 socket.setSoTimeout(5000);
+
+                // Invia i dati al server
+                outputStream = new DataOutputStream(socket.getOutputStream());
                 String getbooks = type + ":" + username + ":\n";
                 outputStream.write(getbooks.getBytes());
                 outputStream.flush();
 
+                // Ricevi i dati dal server
+                inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String line;
+
+                // Continua a leggere fino a quando non arriva "END"
                 while ((line = inputStream.readLine()) != null && !line.equals("END")) {
+                    System.out.println("Dati ricevuti: " + line);
                     String[] bookData = line.split(",");
 
                     if (bookData.length == 7) {
@@ -415,19 +430,21 @@ public class SocketClient {
                             int quantita = Integer.parseInt(bookData[5]);
                             int copiePrestate = Integer.parseInt(bookData[6]);
 
+                            // Aggiungi il libro alla lista anche se le copie disponibili sono zero
+                            Book book = new Book(
+                                    bookData[0],    // isbn
+                                    bookData[1],    // titolo
+                                    bookData[2],    // genere
+                                    bookData[3],    // imageUrl
+                                    bookData[4],    // autore
+                                    quantita,       // quantita
+                                    copiePrestate    // copiePrestate
+                            );
+                            books.add(book);
+
+                            // Aggiungi un messaggio di errore se le copie disponibili sono zero
                             if (quantita - copiePrestate <= 0) {
                                 errorMessages.add("Nessuna copia disponibile per " + bookData[1]);
-                            } else {
-                                Book book = new Book(
-                                        bookData[0],    // isbn
-                                        bookData[1],    // titolo
-                                        bookData[2],    // genere
-                                        bookData[3],    // imageUrl
-                                        bookData[4],    // autore
-                                        quantita,       // quantita
-                                        copiePrestate    // copiePrestate
-                                );
-                                books.add(book);
                             }
                         } catch (NumberFormatException e) {
                             System.err.println("Errore durante il parsing dei dati del libro: " + e.getMessage());
@@ -436,9 +453,19 @@ public class SocketClient {
                         System.err.println("Dati libro non corretti: " + line);
                     }
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
+                // Chiudi le risorse
+                try {
+                    if (outputStream != null) outputStream.close();
+                    if (inputStream != null) inputStream.close();
+                    if (socket != null) socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 // Mostra i messaggi di errore nel thread principale
                 if (!errorMessages.isEmpty()) {
                     StringBuilder errorMessage = new StringBuilder();
@@ -447,9 +474,8 @@ public class SocketClient {
                     }
                     String finalMessage = errorMessage.toString();
 
-                    // Crea un Handler per il thread principale
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> {
+                    // Usa il Handler associato al thread principale
+                    new Handler(Looper.getMainLooper()).post(() -> {
                         Toast.makeText(context, finalMessage, Toast.LENGTH_SHORT).show();
                     });
                 }
@@ -459,8 +485,9 @@ public class SocketClient {
             }
         }).start();
 
-        return books;  // Restituisci la lista di libri (potrebbe essere vuota all'inizio)
+        return books;  // Restituisci la lista di libri
     }
+
 
 
 
