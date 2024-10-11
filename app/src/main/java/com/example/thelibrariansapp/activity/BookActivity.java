@@ -72,10 +72,10 @@ public class BookActivity extends ImmersiveActivity {
         bookIsbn.setText(book.getIsbn());
 
         if (book.getAvailable() < 1){
-            aggiungiBtn.setClickable(false);
+
             aggiungiBtn.setText("Non disponibile");
         } else {
-            aggiungiBtn.setClickable(true);
+
             aggiungiBtn.setText("Aggiungi al carrello");
         }
 
@@ -87,26 +87,33 @@ public class BookActivity extends ImmersiveActivity {
             @Override
             public void onClick(View v) {
 
-                // Ottieni il libro corrente
-                CartManager.getInstance().addBook(book); // Aggiungi il libro al carrello
+                if(book.getAvailable() > 1) {
+                    // Ottieni il libro corrente
+                    CartManager.getInstance().addBook(book); // Aggiungi il libro al carrello
 
-                // Thread per aggiungere libro al  DB
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SocketClient client = new SocketClient();
-                        String response = client.bookTODB("aggiungialcarrello", username, book.getIsbn());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(BookActivity.this, response, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                    // Thread per aggiungere libro al  DB
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SocketClient client = new SocketClient();
+                            String response = client.bookTODB("aggiungialcarrello", username, book.getIsbn());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(BookActivity.this, response, Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
-                    }
-                }).start();
-                Intent intent = new Intent(BookActivity.this, HomeActivity.class);
-                startActivity(intent);
+                        }
+                    }).start();
+                }else {
+                        Toast.makeText(BookActivity.this, "Libro terminato", Toast.LENGTH_SHORT).show();
+                }
+
+
+
+                    Intent intent = new Intent(BookActivity.this, HomeActivity.class);
+                    startActivity(intent);
 
             }
         });
