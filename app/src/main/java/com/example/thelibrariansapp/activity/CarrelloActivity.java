@@ -95,7 +95,7 @@ public class CarrelloActivity extends ImmersiveActivity {
         // Thread per ottenere i libri salvati nel carrello
         executorService.execute(() -> {
             SocketClient client = new SocketClient();
-            ArrayList<Book> serverBooks = client.getBagBooks("bagbooks", username); // Ottieni i libri nel carrello
+            ArrayList<Book> serverBooks = client.getBagBooks("bagbooks", username, this); // Ottieni i libri nel carrello
 
             // Aggiorna l'interfaccia utente dopo aver ottenuto i libri
             runOnUiThread(() -> {
@@ -195,7 +195,7 @@ public class CarrelloActivity extends ImmersiveActivity {
     private void reloadBooks() {
         executorService.execute(() -> {
             SocketClient client = new SocketClient();
-            ArrayList<Book> serverBooks = client.getBagBooks("bagbooks", username); // Ottieni i libri nel carrello
+            ArrayList<Book> serverBooks = client.getBagBooks("bagbooks", username, this); // Ottieni i libri nel carrello
 
             // Aggiorna l'interfaccia utente dopo aver ottenuto i libri
             runOnUiThread(() -> {

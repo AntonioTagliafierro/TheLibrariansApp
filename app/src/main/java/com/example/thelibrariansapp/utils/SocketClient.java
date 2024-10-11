@@ -1,5 +1,8 @@
 package com.example.thelibrariansapp.utils;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import com.example.thelibrariansapp.models.Book;
 import com.example.thelibrariansapp.models.Loans;
 import com.example.thelibrariansapp.models.User;
@@ -384,7 +387,7 @@ public class SocketClient {
         return 0;
     }
 
-    public ArrayList<Book> getBagBooks(String type, String username) {
+    public ArrayList<Book> getBagBooks(String type, String username, Context context) {
 
         Socket socket = null;
         DataOutputStream outputStream = null;
@@ -398,15 +401,12 @@ public class SocketClient {
 
             // Connessione al server
             socket = new Socket(SERVER_IP, SERVER_PORT);
-
-            // Imposta un timeout per la lettura dal server (5000 ms = 5 secondi)
             socket.setSoTimeout(5000);
 
             // Invia i dati al server
             outputStream = new DataOutputStream(socket.getOutputStream());
-            String getbooks = type + ":" + username + ":\n";  // Indica il tipo di richiesta
-            OutputStream os = socket.getOutputStream();
-            os.write(getbooks.getBytes());
+            String getbooks = type + ":" + username + ":\n";
+            outputStream.write(getbooks.getBytes());
             outputStream.flush();
 
             // Ricevi i dati dal server
@@ -415,20 +415,31 @@ public class SocketClient {
 
             // Continua a leggere fino a quando non arriva "END"
             while ((line = inputStream.readLine()) != null && !line.equals("END")) {
-                System.out.println("Dati ricevuti: " + line); // Log dei dati ricevuti
-                String[] bookData = line.split(",");  // Spezza la stringa separata da virgole
-                if (bookData.length == 7) {  // Assicurati che ci siano tutti i campi
+                System.out.println("Dati ricevuti: " + line);
+                String[] bookData = line.split(",");
+
+                if (bookData.length == 7) {
                     try {
-                        Book book = new Book(
-                                bookData[0],    // isbn
-                                bookData[1],    // titolo
-                                bookData[2],    // genere
-                                bookData[3],    // imageUrl
-                                bookData[4],    // autore
-                                Integer.parseInt(bookData[5]),  // quantita
-                                Integer.parseInt(bookData[6])   // copiePrestate
-                        );
-                        books.add(book);  // Aggiungi il libro alla lista
+                        int quantita = Integer.parseInt(bookData[5]);
+                        int copiePrestate = Integer.parseInt(bookData[6]);
+
+                        // Controlla se le copie disponibili sono zero
+                        if (quantita - copiePrestate <= 0) {
+                            // Mostra un toast se non ci sono copie disponibili
+                            Toast.makeText(context, "Nessuna copia disponibile per " + bookData[1], Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Aggiungi il libro alla lista se ci sono copie disponibili
+                            Book book = new Book(
+                                    bookData[0],    // isbn
+                                    bookData[1],    // titolo
+                                    bookData[2],    // genere
+                                    bookData[3],    // imageUrl
+                                    bookData[4],    // autore
+                                    quantita,       // quantita
+                                    copiePrestate    // copiePrestate
+                            );
+                            books.add(book);
+                        }
                     } catch (NumberFormatException e) {
                         System.err.println("Errore durante il parsing dei dati del libro: " + e.getMessage());
                     }
@@ -454,6 +465,8 @@ public class SocketClient {
         System.out.println(books.toString());
         return books;  // Restituisci la lista di libri
     }
+
+
 
     public String bookTODB(String type, String username, String isbn) {
 
