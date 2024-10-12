@@ -1,11 +1,5 @@
 package com.example.thelibrariansapp.utils;
 
-import android.content.Context;
-import android.os.Looper;
-import android.widget.Toast;
-import android.os.Handler;
-
-
 import com.example.thelibrariansapp.models.Book;
 import com.example.thelibrariansapp.models.Loans;
 import com.example.thelibrariansapp.models.User;
@@ -23,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 
 public class SocketClient {
     private static final String SERVER_IP = "35.192.39.236"; // Sostituisci con l'indirizzo IP del server
@@ -76,7 +69,7 @@ public class SocketClient {
         return serverResponse; // Restituisci la risposta
     }
 
-    public String checkLoansDelay(String type, String username) {
+    public String check(String type, String username) {
         Socket socket = null;
         DataOutputStream outputStream = null;
         DataInputStream inputStream = null;
@@ -95,7 +88,7 @@ public class SocketClient {
 
             // Invia i dati al server
             outputStream = new DataOutputStream(socket.getOutputStream());
-            String credentials = type + ":" + username + ":\n";  // Indica se è registrazione o login
+            String credentials = type + ":" + username + ":\n";
             OutputStream os = socket.getOutputStream();
             os.write(credentials.getBytes());
             outputStream.flush();
@@ -391,108 +384,76 @@ public class SocketClient {
         return 0;
     }
 
-    public ArrayList<Book> getBagBooks(String type, String username, Context context) {
+    public ArrayList<Book> getBagBooks(String type, String username) {
+
+        Socket socket = null;
+        DataOutputStream outputStream = null;
+        BufferedReader inputStream = null;
         ArrayList<Book> books = new ArrayList<>();
-        ArrayList<String> errorMessages = new ArrayList<>(); // Per raccogliere messaggi di errore
 
-        // Esegui l'operazione in un thread separato
-        new Thread(() -> {
-            Socket socket = null;
-            DataOutputStream outputStream = null;
-            BufferedReader inputStream = null;
+        try {
+            // Test connessione
+            System.out.println("Tentativo di connessione a " + SERVER_IP + ":" + SERVER_PORT);
+            System.out.println("Request type: " + type);
 
-            try {
-                // Test connessione
-                System.out.println("Tentativo di connessione a " + SERVER_IP + ":" + SERVER_PORT);
-                System.out.println("Request type: " + type);
+            // Connessione al server
+            socket = new Socket(SERVER_IP, SERVER_PORT);
 
-                // Connessione al server
-                socket = new Socket(SERVER_IP, SERVER_PORT);
-                socket.setSoTimeout(5000);
+            // Imposta un timeout per la lettura dal server (5000 ms = 5 secondi)
+            socket.setSoTimeout(5000);
 
-                // Invia i dati al server
-                outputStream = new DataOutputStream(socket.getOutputStream());
-                String getbooks = type + ":" + username + ":\n";
-                outputStream.write(getbooks.getBytes());
-                outputStream.flush();
+            // Invia i dati al server
+            outputStream = new DataOutputStream(socket.getOutputStream());
+            String getbooks = type + ":" + username + ":\n";  // Indica il tipo di richiesta
+            OutputStream os = socket.getOutputStream();
+            os.write(getbooks.getBytes());
+            outputStream.flush();
 
-                // Ricevi i dati dal server
-                inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String line;
+            // Ricevi i dati dal server
+            inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String line;
 
-                // Continua a leggere fino a quando non arriva "END"
-                while ((line = inputStream.readLine()) != null && !line.equals("END")) {
-                    System.out.println("Dati ricevuti: " + line);
-                    String[] bookData = line.split(",");
-
-                    if (bookData.length == 7) {
-                        try {
-                            int quantita = Integer.parseInt(bookData[5]);
-                            int copiePrestate = Integer.parseInt(bookData[6]);
-
-                            // Aggiungi il libro alla lista anche se le copie disponibili sono zero
-                            Book book = new Book(
-                                    bookData[0],    // isbn
-                                    bookData[1],    // titolo
-                                    bookData[2],    // genere
-                                    bookData[3],    // imageUrl
-                                    bookData[4],    // autore
-                                    quantita,       // quantita
-                                    copiePrestate    // copiePrestate
-                            );
-                            books.add(book);
-
-                            // Aggiungi un messaggio di errore se le copie disponibili sono zero
-                            if (quantita - copiePrestate <= 0) {
-                                errorMessages.add("Nessuna copia disponibile per " + bookData[1]);
-                            }
-                        } catch (NumberFormatException e) {
-                            System.err.println("Errore durante il parsing dei dati del libro: " + e.getMessage());
-                        }
-                    } else {
-                        System.err.println("Dati libro non corretti: " + line);
+            // Continua a leggere fino a quando non arriva "END"
+            while ((line = inputStream.readLine()) != null && !line.equals("END")) {
+                System.out.println("Dati ricevuti: " + line); // Log dei dati ricevuti
+                String[] bookData = line.split(",");  // Spezza la stringa separata da virgole
+                if (bookData.length == 7) {  // Assicurati che ci siano tutti i campi
+                    try {
+                        Book book = new Book(
+                                bookData[0],    // isbn
+                                bookData[1],    // titolo
+                                bookData[2],    // genere
+                                bookData[3],    // imageUrl
+                                bookData[4],    // autore
+                                Integer.parseInt(bookData[5]),  // quantita
+                                Integer.parseInt(bookData[6])   // copiePrestate
+                        );
+                        books.add(book);  // Aggiungi il libro alla lista
+                    } catch (NumberFormatException e) {
+                        System.err.println("Errore durante il parsing dei dati del libro: " + e.getMessage());
                     }
+                } else {
+                    System.err.println("Dati libro non corretti: " + line);
                 }
+            }
 
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // Chiudi le risorse
+            try {
+                if (outputStream != null) outputStream.close();
+                if (inputStream != null) inputStream.close();
+                if (socket != null) socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                // Chiudi le risorse
-                try {
-                    if (outputStream != null) outputStream.close();
-                    if (inputStream != null) inputStream.close();
-                    if (socket != null) socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                // Mostra i messaggi di errore nel thread principale
-                if (!errorMessages.isEmpty()) {
-                    StringBuilder errorMessage = new StringBuilder();
-                    for (String msg : errorMessages) {
-                        errorMessage.append(msg).append("\n");
-                    }
-                    String finalMessage = errorMessage.toString();
-
-                    // Usa il Handler associato al thread principale
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        Toast.makeText(context, finalMessage, Toast.LENGTH_SHORT).show();
-                    });
-                }
-
-                System.out.println("Ora stampo la lista");
-                System.out.println(books.toString());
             }
-        }).start();
-
+        }
+        System.out.println("Ora stampo la lista");
+        System.out.println(books.toString());
         return books;  // Restituisci la lista di libri
     }
-
-
-
-
-
-
 
     public String bookTODB(String type, String username, String isbn) {
 

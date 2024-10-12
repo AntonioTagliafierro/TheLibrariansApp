@@ -107,6 +107,8 @@ public class HomeActivity extends ImmersiveActivity {
             editor.apply();
         }
 
+        checkAvaiable();
+
         // Gestione visibilità filtri e cerca
         filterBtn.setOnClickListener(new View.OnClickListener() {
             boolean isVisible = false;
@@ -135,9 +137,12 @@ public class HomeActivity extends ImmersiveActivity {
         cercaBtn.setOnClickListener(v -> searchBooks());
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
+        checkAvaiable();
         // Carica i libri dal server solo se non sono già stati caricati
         if (bookList == null) {
             loadBooksFromServer();
@@ -147,17 +152,38 @@ public class HomeActivity extends ImmersiveActivity {
         }
     }
 
+    private void checkAvaiable() {
+
+        new Thread(() -> {
+            SocketClient client = new SocketClient();
+            String response = client.check("checkloans", username);
+
+            runOnUiThread(() -> {
+                if ("Hai dei prestiti in ritardo".equals(response)) {
+                    // Eseguire azione
+                    LateLoansDialogFragment dialog = new LateLoansDialogFragment();
+                    dialog.show(getSupportFragmentManager(), "LateLoansDialog");
+
+                } else {
+                    Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }).start();
+
+    }
+
     private void checkDelay() {
 
         new Thread(() -> {
             SocketClient client = new SocketClient();
-            String response = client.checkLoansDelay("checkloans", username);
+            String response = client.check("checkavaiable", username);
 
             runOnUiThread(() -> {
-                if ("Hai dei prestiti in ritardoEND".equals(response)) {
+                if ("Hai dei libri terminati nel carrello".equals(response)) {
                     // Eseguire azione
                     LateLoansDialogFragment dialog = new LateLoansDialogFragment();
-                    dialog.show(getSupportFragmentManager(), "LateLoansDialog");
+                    dialog.show(getSupportFragmentManager(), "NotAvaiableDialog");
 
                 } else {
                     Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();

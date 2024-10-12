@@ -7,12 +7,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 
 
-
+import com.example.thelibrariansapp.LateLoansDialogFragment;
 import com.example.thelibrariansapp.R;
+import com.example.thelibrariansapp.utils.SocketClient;
 
 public class ProfiloActivity extends ImmersiveActivity {
 
@@ -45,6 +47,7 @@ public class ProfiloActivity extends ImmersiveActivity {
             }
         });
 
+        checkAvaiable();
 
         //tasto di uscita
         Button ButtonEsci = findViewById(R.id.esciButton);
@@ -78,6 +81,33 @@ public class ProfiloActivity extends ImmersiveActivity {
 
 
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAvaiable();
+    }
+
+    private void checkAvaiable() {
+
+        new Thread(() -> {
+            SocketClient client = new SocketClient();
+            String response = client.check("checkloans", username);
+
+            runOnUiThread(() -> {
+                if ("Hai dei prestiti in ritardo".equals(response)) {
+                    // Eseguire azione
+                    LateLoansDialogFragment dialog = new LateLoansDialogFragment();
+                    dialog.show(getSupportFragmentManager(), "LateLoansDialog");
+
+                } else {
+                    Toast.makeText(ProfiloActivity.this, response, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }).start();
 
     }
 }
