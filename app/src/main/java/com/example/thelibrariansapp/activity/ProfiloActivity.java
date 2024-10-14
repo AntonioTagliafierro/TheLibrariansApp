@@ -94,13 +94,13 @@ public class ProfiloActivity extends ImmersiveActivity {
 
         new Thread(() -> {
             SocketClient client = new SocketClient();
-            String response = client.check("checkloans", username);
+            String response = client.check("checkavaiable", username);
 
             runOnUiThread(() -> {
-                if ("Hai dei prestiti in ritardo".equals(response)) {
+                if ("Hai dei libri terminati nel carrello".equals(response)) {
                     // Eseguire azione
                     LateLoansDialogFragment dialog = new LateLoansDialogFragment();
-                    dialog.show(getSupportFragmentManager(), "LateLoansDialog");
+                    dialog.show(getSupportFragmentManager(), "NotAvaiableDialog");
 
                 } else {
                     Toast.makeText(ProfiloActivity.this, response, Toast.LENGTH_SHORT).show();
