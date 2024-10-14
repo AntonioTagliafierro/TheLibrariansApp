@@ -876,4 +876,7 @@ public class SocketClient {
         return 0;
     }
 
+    public void editMaxPrestiti(String editmaxprestiti, CharSequence text) {
+
+    }
 }
