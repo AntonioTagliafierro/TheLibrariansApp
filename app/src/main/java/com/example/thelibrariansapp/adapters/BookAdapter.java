@@ -76,7 +76,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView bookTitle, bookIsbn, bookAuthor, bookGenre;
+        public TextView bookTitle, bookIsbn, bookAuthor, bookGenre, nonDisponibile;
         public ImageView bookImg;
 
 
@@ -87,6 +87,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> 
             bookIsbn = itemView.findViewById(R.id.bookIsbn);
             bookGenre = itemView.findViewById(R.id.bookGenre);
             bookImg = itemView.findViewById(R.id.bookImg);
+            nonDisponibile = itemView.findViewById(R.id.nonDisponibileTextView);
 
         }
 
@@ -95,6 +96,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.MyViewHolder> 
             bookGenre.setText(book.getGenre());
             bookAuthor.setText(book.getAuthor());
             bookIsbn.setText(book.getIsbn());
+            if(book.getAvailable() < 1){
+                nonDisponibile.setVisibility(View.VISIBLE);
+            }
             if (book.getImageUrl() == null) {
                 bookImg.setImageResource(R.drawable.ic_launcher_background);
             } else {

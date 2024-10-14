@@ -80,4 +80,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bookAuthor" />
 
+    <TextView
+        android:id="@+id/nonDisponibileTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Non Disponibile"
+        android:textColor="#EF1000"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookIsbn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
