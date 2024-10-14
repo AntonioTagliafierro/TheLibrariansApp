@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.thelibrariansapp.R;
@@ -64,8 +66,22 @@ public class MaxLoansActivity extends AppCompatActivity {
         confermaBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                socketClient.editMaxPrestiti("editmaxprestiti", numberTextView.getText());
 
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        String response = socketClient.editMaxPrestiti("editmaxprestiti", numberTextView.getText());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MaxLoansActivity.this, response, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                }).start();
             }
         });
 

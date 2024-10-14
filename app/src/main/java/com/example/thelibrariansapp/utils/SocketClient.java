@@ -876,7 +876,52 @@ public class SocketClient {
         return 0;
     }
 
-    public void editMaxPrestiti(String editmaxprestiti, CharSequence text) {
+    public String editMaxPrestiti(String type, CharSequence value) {
+
+        Socket socket = null;
+        DataOutputStream outputStream = null;
+        DataInputStream inputStream = null;
+        String serverResponse = "";
+
+        try {
+
+            //test connessione
+            System.out.println("Tentativo di connessione a " + SERVER_IP + ":" + SERVER_PORT);
+            System.out.println("Request type: %s\n" + type);
+            System.out.println("Nuovo valore:\n" + value);
+
+
+
+            // Connessione al server
+            socket = new Socket(SERVER_IP, SERVER_PORT);
+
+            // Invia i dati al server
+            outputStream = new DataOutputStream(socket.getOutputStream());
+            String numLease = type + ":" + value + ":\n";
+            OutputStream os = socket.getOutputStream();
+            os.write(numLease.getBytes());
+            outputStream.flush();
+
+            // Ricevi risposta dal server
+            inputStream = new DataInputStream(socket.getInputStream());
+            serverResponse = inputStream.readLine();
+            System.out.println("Risposta dal server: " + serverResponse);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            serverResponse = "Errore nella comunicazione con il server"; // Messaggio di errore
+        } finally {
+            // Chiudi le risorse
+            try {
+                if (outputStream != null) outputStream.close();
+                if (inputStream != null) inputStream.close();
+                if (socket != null) socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return serverResponse; // Restituisci la risposta
 
     }
 }
