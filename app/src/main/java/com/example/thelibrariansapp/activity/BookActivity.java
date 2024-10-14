@@ -87,7 +87,7 @@ public class BookActivity extends ImmersiveActivity {
             @Override
             public void onClick(View v) {
 
-                if(book.getAvailable() > 1) {
+                if(book.getAvailable() > 0) {
                     // Ottieni il libro corrente
                     CartManager.getInstance().addBook(book); // Aggiungi il libro al carrello
 
