@@ -102,8 +102,6 @@ public class ProfiloActivity extends ImmersiveActivity {
                     LateLoansDialogFragment dialog = new LateLoansDialogFragment();
                     dialog.show(getSupportFragmentManager(), "NotAvaiableDialog");
 
-                } else {
-                    Toast.makeText(ProfiloActivity.this, response, Toast.LENGTH_SHORT).show();
                 }
             });
 

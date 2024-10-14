@@ -208,8 +208,6 @@ public class CarrelloActivity extends ImmersiveActivity {
                     LateLoansDialogFragment dialog = new LateLoansDialogFragment();
                     dialog.show(getSupportFragmentManager(), "NotAvaiableDialog");
 
-                } else {
-                    Toast.makeText(CarrelloActivity.this, response, Toast.LENGTH_SHORT).show();
                 }
             });
 

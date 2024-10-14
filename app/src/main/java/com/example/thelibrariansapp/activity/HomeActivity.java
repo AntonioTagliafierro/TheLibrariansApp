@@ -164,8 +164,6 @@ public class HomeActivity extends ImmersiveActivity {
                     LateLoansDialogFragment dialog = new LateLoansDialogFragment();
                     dialog.show(getSupportFragmentManager(), "NotAvaiableDialog");
 
-                } else {
-                    Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
                 }
             });
 
