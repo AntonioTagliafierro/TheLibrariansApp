@@ -350,7 +350,7 @@ public class SocketClient {
 
             // Invia i dati al server
             outputStream = new DataOutputStream(socket.getOutputStream());
-            String numLease = type + ":" + username + ":\n";  // Indica se è registrazione o login
+            String numLease = type + ":" + username + ":\n";
             OutputStream os = socket.getOutputStream();
             os.write(numLease.getBytes());
             outputStream.flush();
@@ -476,7 +476,7 @@ public class SocketClient {
 
             // Invia i dati al server
             outputStream = new DataOutputStream(socket.getOutputStream());
-            String credentials = type + ":" + username + ":" + isbn + ":\n";  // Indica se è registrazione o login
+            String credentials = type + ":" + username + ":" + isbn + ":\n";
             OutputStream os = socket.getOutputStream();
             os.write(credentials.getBytes());
             outputStream.flush();
@@ -796,7 +796,7 @@ public class SocketClient {
 
             // Invia i dati al server
             outputStream = new DataOutputStream(socket.getOutputStream());
-            String credentials = type + ":" + isbn + ":" + username + "\n";  // Indica se è registrazione o login
+            String credentials = type + ":" + isbn + ":" + username + "\n";
             OutputStream os = socket.getOutputStream();
             os.write(credentials.getBytes());
             outputStream.flush();
@@ -821,6 +821,59 @@ public class SocketClient {
         }
 
         return serverResponse; // Restituisci la risposta
+    }
+
+    public int nMaxPrestiti(String type) {
+        Socket socket = null;
+        DataOutputStream outputStream = null;
+        DataInputStream inputStream = null;
+        String serverResponse = "";
+
+        try {
+
+            //test connessione
+            System.out.println("Tentativo di connessione a " + SERVER_IP + ":" + SERVER_PORT);
+            System.out.println("Request type: %s\n" + type);
+
+
+
+            // Connessione al server
+            socket = new Socket(SERVER_IP, SERVER_PORT);
+
+            // Invia i dati al server
+            outputStream = new DataOutputStream(socket.getOutputStream());
+            String numLease = type + ":\n";
+            OutputStream os = socket.getOutputStream();
+            os.write(numLease.getBytes());
+            outputStream.flush();
+
+            // Ricevi risposta dal server
+            inputStream = new DataInputStream(socket.getInputStream());
+            serverResponse = inputStream.readLine();
+            System.out.println("Risposta dal server: " + serverResponse);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            serverResponse = "Errore nella comunicazione con il server"; // Messaggio di errore
+        } finally {
+            // Chiudi le risorse
+            try {
+                if (outputStream != null) outputStream.close();
+                if (inputStream != null) inputStream.close();
+                if (socket != null) socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(serverResponse.equals("Errore durante l'esecuzione della query")){
+            System.err.println("Errore esecuzione richiesta");
+        }else {
+
+            return Integer.parseInt(serverResponse); // Restituisci la risposta
+
+        }
+        return 0;
     }
 
 }

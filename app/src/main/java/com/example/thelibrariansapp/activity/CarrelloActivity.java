@@ -37,7 +37,7 @@ public class CarrelloActivity extends ImmersiveActivity {
     private SharedPreferences sharedPreferences; // SharedPreferences per recuperare lo username
     private String username; // Username dell'utente
     private int prestiti = 0; // Numero di prestiti attuali
-    private final int max = 10; // Numero massimo di prestiti
+    private int max = 0; // Numero massimo di prestiti
     private int sizeCarrello = 0; // Dimensione del carrello
 
     // Executor per gestire operazioni di rete
@@ -92,6 +92,10 @@ public class CarrelloActivity extends ImmersiveActivity {
         executorService.execute(() -> {
             SocketClient client = new SocketClient();
             prestiti = client.getNLease("numprestiti", username); // Ottieni il numero di prestiti
+        });
+        executorService.execute(() -> {
+            SocketClient client = new SocketClient();
+            max = client.nMaxPrestiti("getmaxprestiti");
         });
         checkAvaiable();
 
