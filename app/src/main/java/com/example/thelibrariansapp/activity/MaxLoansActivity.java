@@ -55,9 +55,10 @@ public class MaxLoansActivity extends AppCompatActivity {
             }
    });
 
-       int maxPrestiti = socketClient.nMaxPrestiti("getmaxprestiti");
+       getMaxPrestiti();
 
-        numberTextView.setText(maxPrestiti);
+
+
 
 
         //logica tasto conferma
@@ -87,10 +88,29 @@ public class MaxLoansActivity extends AppCompatActivity {
 
 }
 
+    private int getMaxPrestiti() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String response = String.valueOf(socketClient.nMaxPrestiti("getmaxprestiti"));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        numberTextView.setText(response);
+                    }
+                });
+
+            }
+        }).start();
+
+
+        return 0;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        int maxPrestiti = socketClient.nMaxPrestiti("getmaxprestiti");
-        numberTextView.setText(maxPrestiti);
+        getMaxPrestiti();
     }
 }
