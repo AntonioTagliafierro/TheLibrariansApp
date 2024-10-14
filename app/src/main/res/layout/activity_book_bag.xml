@@ -130,7 +130,7 @@
         android:layout_width="48dp"
         android:layout_height="32dp"
         android:layout_gravity="end|bottom"
-        android:layout_margin="0dp"
+        android:layout_margin="16dp"
         android:layout_marginTop="8dp"
         android:background="@color/lemon_cream"
         android:contentDescription="Back"
