@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.thelibrariansapp.LateLoansDialogFragment;
+import com.example.thelibrariansapp.NotAvaiableDialogFragment;
 import com.example.thelibrariansapp.adapters.BagBooksAdapter;
 import com.example.thelibrariansapp.utils.CartManager;
 import com.example.thelibrariansapp.R;
@@ -205,7 +206,7 @@ public class CarrelloActivity extends ImmersiveActivity {
             runOnUiThread(() -> {
                 if ("Hai dei libri terminati nel carrello".equals(response)) {
                     // Eseguire azione
-                    LateLoansDialogFragment dialog = new LateLoansDialogFragment();
+                    NotAvaiableDialogFragment dialog = new NotAvaiableDialogFragment();
                     dialog.show(getSupportFragmentManager(), "NotAvaiableDialog");
 
                 }

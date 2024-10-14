@@ -2,6 +2,7 @@ package com.example.thelibrariansapp.activity;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.NotProvisionedException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.thelibrariansapp.LateLoansDialogFragment;
+import com.example.thelibrariansapp.NotAvaiableDialogFragment;
 import com.example.thelibrariansapp.adapters.BookAdapter;
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.utils.SocketClient;
@@ -161,7 +163,7 @@ public class HomeActivity extends ImmersiveActivity {
             runOnUiThread(() -> {
                 if ("Hai dei libri terminati nel carrello".equals(response)) {
                     // Eseguire azione
-                    LateLoansDialogFragment dialog = new LateLoansDialogFragment();
+                    NotAvaiableDialogFragment dialog = new NotAvaiableDialogFragment();
                     dialog.show(getSupportFragmentManager(), "NotAvaiableDialog");
 
                 }
