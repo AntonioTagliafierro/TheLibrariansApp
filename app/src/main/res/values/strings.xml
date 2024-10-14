@@ -32,4 +32,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="slide_hint">Scorri per mostrare i pulsanti</string>
+    <string name="title_activity_number_loans">activity_numberLoans</string>
 </resources>
