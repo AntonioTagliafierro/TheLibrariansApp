@@ -21,11 +21,6 @@ public class NotAvaiableDialogFragment extends DialogFragment {
                         // Chiudi il dialog e vai alla ManageBooksActivity
                         dismiss();
                     }
-                })
-                .setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dismiss(); // Chiudi il dialog
-                    }
                 });
         return builder.create();
     }
