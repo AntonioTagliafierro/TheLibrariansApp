@@ -109,7 +109,7 @@ public class HomeActivity extends ImmersiveActivity {
             editor.apply();
         }
 
-        checkAvaiable();
+
 
         // Gestione visibilità filtri e cerca
         filterBtn.setOnClickListener(new View.OnClickListener() {
@@ -144,7 +144,6 @@ public class HomeActivity extends ImmersiveActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkAvaiable();
         // Carica i libri dal server solo se non sono già stati caricati
         if (bookList == null) {
             loadBooksFromServer();
@@ -154,24 +153,7 @@ public class HomeActivity extends ImmersiveActivity {
         }
     }
 
-    private void checkAvaiable() {
 
-        new Thread(() -> {
-            SocketClient client = new SocketClient();
-            String response = client.check("checkavaiable", username);
-
-            runOnUiThread(() -> {
-                if ("Hai dei libri terminati nel carrello".equals(response)) {
-                    // Eseguire azione
-                    NotAvaiableDialogFragment dialog = new NotAvaiableDialogFragment();
-                    dialog.show(getSupportFragmentManager(), "NotAvaiableDialog");
-
-                }
-            });
-
-        }).start();
-
-    }
 
     private void checkDelay() {
 
