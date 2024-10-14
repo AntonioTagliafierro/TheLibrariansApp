@@ -23,7 +23,7 @@ public class ProfiloActivity extends ImmersiveActivity {
     private ImageButton profiloButton;
     private SharedPreferences sharedPreferences;
     private String username;
-
+    SocketClient socketClient = new SocketClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,15 +79,65 @@ public class ProfiloActivity extends ImmersiveActivity {
             startActivity(intent);
         });
 
-
+        getNumberUserLoans();
+        getMaxPrestiti();
 
 
     }
-
     @Override
     protected void onResume() {
         super.onResume();
+        getNumberUserLoans();
+        getMaxPrestiti();
     }
 
+    TextView maxLoansTextView = findViewById(R.id.showMaxPrestitiTV);
+
+
+
+    private int getMaxPrestiti() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String response = String.valueOf(socketClient.nMaxPrestiti("getmaxprestiti"));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        maxLoansTextView.setText(response);
+                    }
+                });
+
+            }
+        }).start();
+
+
+        return 0;
+    }
+
+    TextView LoansAttualiTextView = findViewById(R.id.showNumPrestitiTV);
+
+
+
+    private int getNumberUserLoans() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String response = String.valueOf(socketClient.getNLease("numprestiti", username));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoansAttualiTextView.setText(response);
+                    }
+                });
+
+            }
+        }).start();
+
+
+        return 0;
+    }
 
 }
+
