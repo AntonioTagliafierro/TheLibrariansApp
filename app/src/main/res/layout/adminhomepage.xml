@@ -125,6 +125,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/navy"
+            android:textColor="@color/lemon_cream"
             android:text="Prestiti" />
 
 

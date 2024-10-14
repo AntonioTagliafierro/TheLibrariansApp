@@ -16,11 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TheLibrariansApp"
         tools:targetApi="31">
-        <activity
-            android:name=".activity_numberLoans"
-            android:exported="false"
-            android:label="@string/title_activity_number_loans"
-            android:theme="@style/Theme.TheLibrariansApp" />
+        <activity android:name=".activity.MaxLoansActivity"
+            android:exported="false"/>
+
         <activity
             android:name=".activity.ImmersiveActivity"
             android:exported="false" />

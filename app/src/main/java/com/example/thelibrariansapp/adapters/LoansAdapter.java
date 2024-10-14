@@ -127,31 +127,26 @@ public class LoansAdapter extends RecyclerView.Adapter<LoansAdapter.LoanViewHold
 
     // Funzione per gestire la restituzione del libro
     private void returnBook(Loans loan, int position) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SocketClient client = new SocketClient();
-                String response = client.returnBook("delivered", loan.getBook().getIsbn(), loan.getUser().getUsername());
+        new Thread(() -> {
+            SocketClient client = new SocketClient();
+            String response = client.returnBook("delivered", loan.getBook().getIsbn(), loan.getUser().getUsername());
 
-                // Usa un Handler per postare sul thread principale
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if ("Stato del prestito aggiornato con successo a 'consegnato'".equals(response)) {
+            // Usa un Handler per postare sul thread principale
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if ("Stato del prestito aggiornato con successo a 'consegnato'".equals(response)) {
 
-                        // Rimuovi l'elemento dalla lista e notifica l'adapter
-                        loansList.remove(position);
-                        notifyItemRemoved(position);
+                    // Aggiorna lo stato a 'consegnato' senza rimuovere l'elemento
+                    loan.setStatus("consegnato");
+                    notifyItemChanged(position);  // Notifica l'adapter che l'elemento è cambiato
 
-                        // Mostra un messaggio di successo
-                        Toast.makeText(context, "Libro restituito con successo", Toast.LENGTH_SHORT).show();
+                    // Mostra un messaggio di successo
+                    Toast.makeText(context, "Libro restituito con successo", Toast.LENGTH_SHORT).show();
 
-                    } else if ("Nessun prestito aggiornato (prestito non trovato o già consegnato)".equals(response)) {
-                        // Gestisce l'errore
-                        Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                } else {
+                    // Gestisci l'errore
+                    Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                }
+            });
         }).start();
     }
 

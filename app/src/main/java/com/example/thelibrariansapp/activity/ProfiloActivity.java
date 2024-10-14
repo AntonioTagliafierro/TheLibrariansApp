@@ -7,11 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-
-
 
 import com.example.thelibrariansapp.R;
 import com.example.thelibrariansapp.utils.SocketClient;
@@ -23,6 +20,8 @@ public class ProfiloActivity extends ImmersiveActivity {
     private ImageButton profiloButton;
     private SharedPreferences sharedPreferences;
     private String username;
+    private TextView maxLoansTextView;
+    private TextView LoansAttualiTextView;
     SocketClient socketClient = new SocketClient();
 
     @Override
@@ -31,59 +30,55 @@ public class ProfiloActivity extends ImmersiveActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profilo);
 
-
         // Recupera lo username dalle SharedPreferences
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         username = sharedPreferences.getString("username", "default_value");
         TextView usernameTextView = findViewById(R.id.usernameText);
         usernameTextView.setText(username);
 
+        // Button per la gestione dei libri
         Button butt = findViewById(R.id.button);
-        butt.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfiloActivity.this, ManageBooksActivity.class);
-                startActivity(intent);
-            }
+        butt.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfiloActivity.this, ManageBooksActivity.class);
+            startActivity(intent);
         });
 
-
-
-        //tasto di uscita
+        // Tasto di uscita
         Button ButtonEsci = findViewById(R.id.esciButton);
-        ButtonEsci.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfiloActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+        ButtonEsci.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfiloActivity.this, MainActivity.class);
+            startActivity(intent);
         });
 
-        //bottom menu
-        ImageButton homeButton = findViewById(R.id.imgBtnHome);
-        ImageButton carrelloButton = findViewById(R.id.imgBtnCarrello);
-        ImageButton profiloButton = findViewById(R.id.imgBtnProfile);
+        // Bottom menu
+        homeButton = findViewById(R.id.imgBtnHome);
+        carrelloButton = findViewById(R.id.imgBtnCarrello);
+        profiloButton = findViewById(R.id.imgBtnProfile);
 
         homeButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, HomeActivity.class);
+            Intent intent = new Intent(ProfiloActivity.this, HomeActivity.class);
             startActivity(intent);
         });
 
         carrelloButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CarrelloActivity.class);
+            Intent intent = new Intent(ProfiloActivity.this, CarrelloActivity.class);
             startActivity(intent);
         });
 
         profiloButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ProfiloActivity.class);
+            Intent intent = new Intent(ProfiloActivity.this, ProfiloActivity.class);
             startActivity(intent);
         });
 
+        // Inizializzazione dei TextView
+        maxLoansTextView = findViewById(R.id.showMaxPrestitiTV);
+        LoansAttualiTextView = findViewById(R.id.showNumPrestitiTV);
+
+        // Chiamata per ottenere i dati dei prestiti
         getNumberUserLoans();
         getMaxPrestiti();
-
-
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -91,53 +86,19 @@ public class ProfiloActivity extends ImmersiveActivity {
         getMaxPrestiti();
     }
 
-    TextView maxLoansTextView = findViewById(R.id.showMaxPrestitiTV);
-
-
-
-    private int getMaxPrestiti() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                String response = String.valueOf(socketClient.nMaxPrestiti("getmaxprestiti"));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        maxLoansTextView.setText(response);
-                    }
-                });
-
-            }
+    // Metodo per ottenere il numero massimo di prestiti
+    private void getMaxPrestiti() {
+        new Thread(() -> {
+            String response = String.valueOf(socketClient.nMaxPrestiti("getmaxprestiti"));
+            runOnUiThread(() -> maxLoansTextView.setText(response));
         }).start();
-
-
-        return 0;
     }
 
-    TextView LoansAttualiTextView = findViewById(R.id.showNumPrestitiTV);
-
-
-
-    private int getNumberUserLoans() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                String response = String.valueOf(socketClient.getNLease("numprestiti", username));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LoansAttualiTextView.setText(response);
-                    }
-                });
-
-            }
+    // Metodo per ottenere il numero di prestiti dell'utente
+    private void getNumberUserLoans() {
+        new Thread(() -> {
+            String response = String.valueOf(socketClient.getNLease("numprestiti", username));
+            runOnUiThread(() -> LoansAttualiTextView.setText(response));
         }).start();
-
-
-        return 0;
     }
-
 }
-
