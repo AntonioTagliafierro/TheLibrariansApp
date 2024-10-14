@@ -16,7 +16,7 @@ public class NotAvaiableDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Libri non disponibili")
                 .setMessage("Uno o più libri che hai nel carrello sono terminati.")
-                .setPositiveButton("Gestisci Prestiti", new DialogInterface.OnClickListener() {
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Chiudi il dialog e vai alla ManageBooksActivity
                         dismiss();
