@@ -105,7 +105,7 @@ public class BookBagActivity extends ImmersiveActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(BookBagActivity.this, response, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(BookBagActivity.this, "libro rimosso dal carrello", Toast.LENGTH_SHORT).show();
 
                                 // Torna alla CarrelloActivity e aggiorna i libri
                                 Intent intent = new Intent(BookBagActivity.this, CarrelloActivity.class);
