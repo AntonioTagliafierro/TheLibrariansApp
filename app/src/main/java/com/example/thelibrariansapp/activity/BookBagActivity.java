@@ -74,9 +74,9 @@ public class BookBagActivity extends ImmersiveActivity {
         bookIsbn.setText(book.getIsbn());
 
         if(book.getAvailable() < 1){
-            nondisponibileText.setActivated(true);
+            nondisponibileText.setVisibility(View.VISIBLE);
         }else{
-            nondisponibileText.setActivated(false);
+            nondisponibileText.setVisibility(View.INVISIBLE);
         }
 
 

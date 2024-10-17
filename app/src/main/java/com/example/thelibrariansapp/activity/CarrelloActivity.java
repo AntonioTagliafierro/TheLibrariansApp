@@ -112,8 +112,6 @@ public class CarrelloActivity extends ImmersiveActivity {
                     sizeCarrello = bookList.size();
 
                     bookAdapter.notifyDataSetChanged(); // Notifica l'adapter dell'aggiornamento
-                } else {
-                    Toast.makeText(CarrelloActivity.this, "Carrello vuoto", Toast.LENGTH_SHORT).show();
                 }
             });
         });
