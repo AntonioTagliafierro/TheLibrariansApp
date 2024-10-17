@@ -100,7 +100,7 @@ public class BookActivity extends ImmersiveActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(BookActivity.this, "libro aggiunto al carrello", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(BookActivity.this, response, Toast.LENGTH_SHORT).show();
                                 }
                             });
 
