@@ -40,7 +40,7 @@ public class BookBagActivity extends ImmersiveActivity {
         bookGenre = findViewById(R.id.bookGenre);
         bookAuthor = findViewById(R.id.bookAuthor);
         bookQuantita = findViewById(R.id.bookQuantity);
-        bookIsbn = findViewById(R.id.bookIsbn);
+        bookIsbn = findViewById(R.id.isbnBook);
         nondisponibileText = findViewById(R.id.nondisponibileText);
 
 
