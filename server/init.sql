@@ -59,6 +59,12 @@ CREATE TABLE IF NOT EXISTS loan (
     stato stato NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS k (
+    max_prestiti INTEGER
+);
+
+
+INSERT INTO k (max_prestiti) VALUES (10);
 
 INSERT INTO users (username, password) VALUES ('admin', 'admin');
 

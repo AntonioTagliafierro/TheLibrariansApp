@@ -44,7 +44,9 @@ void send_books_avaiable_from_db(PGconn *conn,int sock);
 void send_books_avaiable_from_db_key_genre(PGconn *conn,int sock,const char *key, const char *genre);
 void send_books_avaiable_from_db_key(PGconn *conn,int sock,const char *key);
 void send_books_avaiable_from_db_genre(PGconn *conn,int sock,const char *genre);
-
+void check_avaiable(PGconn *conn,int  sock, const char *username);
+void get_max_prestiti(PGconn *conn,int sock);
+void edit_max_prestiti(PGconn *conn, int sock, const char *max_prestiti);
 
 
 
@@ -135,7 +137,7 @@ void get_overdue_loans_by_isbn(PGconn *conn, int sock, const char *isbn) {
 
     // Verifica se ci sono prestiti in ritardo per l'ISBN specificato
     if (rows == 0) {
-        snprintf(buffer, sizeof(buffer), "Nessun prestito in ritardo trovato per l'ISBN %s.\n", isbn);
+        snprintf(buffer, sizeof(buffer), "Nessun prestito in ritardo trovato per il libro selezionato");
         send(sock, buffer, strlen(buffer), 0);
     } else {
         // Itera sui risultati e invia i dati di ogni prestito in ritardo
@@ -237,7 +239,7 @@ void get_loans_by_isbn_not_delivered(PGconn *conn, int sock, const char *isbn) {
 
     // Verifica se ci sono prestiti
     if (rows == 0) {
-        snprintf(buffer, sizeof(buffer), "Nessun prestito trovato per l'ISBN %s\n", isbn);
+        snprintf(buffer, sizeof(buffer), "Nessun prestito trovato per il libro selezionato");
         send(sock, buffer, strlen(buffer), 0);
     } else {
         // Itera sui risultati e invia i dati di ogni prestito
@@ -279,6 +281,20 @@ void update_loan_status(PGconn *conn, int sock, const char *isbn, const char *us
     // Esegui la query
     PGresult *res = PQexec(conn, query);
 
+
+        // Aggiornare le copie prestate (-1)
+        char query2[BUFFER_SIZE];
+        snprintf(query2, sizeof(query2), "UPDATE books SET copieprestate = copieprestate - 1 WHERE isbn = '%s';", isbn);
+        PGresult *res2 = PQexec(conn, query2);
+
+        if (PQresultStatus(res2) != PGRES_COMMAND_OK) {
+            fprintf(stderr, "Errore durante l'aggiornamento di copieprestate: %s\n", PQerrorMessage(conn));
+        } else {
+            printf("Aggiornato copieprestate per il libro con isbn: %s\n", isbn);
+        }
+
+        PQclear(res2);
+
     // Verifica se l'aggiornamento è andato a buon fine
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         fprintf(stderr, "UPDATE failed: %s", PQerrorMessage(conn));
@@ -297,8 +313,7 @@ void update_loan_status(PGconn *conn, int sock, const char *isbn, const char *us
     // Libera la memoria del risultato
     PQclear(res);
 
-    // Invia segnale di fine ("END")
-    send(sock, "END\n", 4, 0);
+
 }
 
 // Funzione per recuperare i prestiti di un determinato utente
@@ -338,7 +353,7 @@ void get_loans_by_user(PGconn *conn, int sock, const char *username) {
 
     // Controlla se l'utente ha prestiti
     if (rows == 0) {
-        snprintf(buffer, sizeof(buffer), "Nessun prestito trovato per l'utente %s\n", username);
+        snprintf(buffer, sizeof(buffer), "Nessun prestito trovato");
         send(sock, buffer, strlen(buffer), 0);
     } else {
         // Itera sui risultati e invia i dettagli di ogni prestito
@@ -399,7 +414,7 @@ void get_loans_by_user_with_state(PGconn *conn, int sock, const char *username, 
 
     // Controlla se l'utente ha prestiti
     if (rows == 0) {
-        snprintf(buffer, sizeof(buffer), "Nessun prestito trovato per l'utente %s\n", username);
+        snprintf(buffer, sizeof(buffer), "Nessun prestito trovato");
         send(sock, buffer, strlen(buffer), 0);
     } else {
         // Itera sui risultati e invia i dettagli di ogni prestito
@@ -423,6 +438,53 @@ void get_loans_by_user_with_state(PGconn *conn, int sock, const char *username, 
     // Pulisci il risultato della query
     PQclear(res);
 }
+
+//controlla disponibilità libri carrello
+void check_avaiable(PGconn *conn, int sock, const char *username){
+    // Controlla la connessione a PostgreSQL
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+        return;
+    }
+
+        // Prepara la query per contare i prestiti in ritardo
+    char query[256];
+    snprintf(query, sizeof(query),
+             "SELECT COUNT(*) "
+                    "FROM bag b "
+                    "JOIN books bo ON b.isbn = bo.isbn "
+                    "WHERE b.username = '%s' AND bo.quantita = bo.copieprestate;", username);
+
+    // Esegui la query
+    PGresult *res = PQexec(conn, query);
+
+    // Verifica se la query è andata a buon fine
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        fprintf(stderr, "Errore nella query: %s", PQerrorMessage(conn));
+        PQclear(res);
+        return;
+    }
+
+    // Ottieni il numero di prestiti in ritardo
+    int numLibriNonDisponibili = atoi(PQgetvalue(res, 0, 0));
+    char buffer[256];
+
+    if (numLibriNonDisponibili > 0) {
+        snprintf(buffer, sizeof(buffer), "Hai dei libri terminati nel carrello");
+    } else {
+        snprintf(buffer, sizeof(buffer), "Tutti i libri sono disponibili");
+    }
+
+    // Invia il messaggio al client
+    send(sock, buffer, strlen(buffer), 0);
+
+    // Libera la memoria del risultato
+    PQclear(res);
+
+    
+}
+
+
 
 //controlla prestiti in ritardo
 void controllaPrestitiInRitardo(PGconn *conn, int sock, const char *username) {
@@ -465,8 +527,7 @@ void controllaPrestitiInRitardo(PGconn *conn, int sock, const char *username) {
     // Libera la memoria del risultato
     PQclear(res);
 
-    // Invia segnale di fine ("END")
-    send(sock, "END\n", 4, 0);
+
 }
 
 
@@ -498,7 +559,7 @@ void get_loans_by_isbn(PGconn *conn, int sock, const char *isbn) {
 
     // Verifica se ci sono prestiti
     if (rows == 0) {
-        snprintf(buffer, sizeof(buffer), "Nessun prestito trovato per l'ISBN %s\n", isbn);
+        snprintf(buffer, sizeof(buffer), "Nessun prestito trovato per il libro selezionato");
         send(sock, buffer, strlen(buffer), 0);
     } else {
         // Itera sui risultati e invia i dati di ogni prestito
@@ -626,12 +687,11 @@ void ordina_book(PGconn *conn, int sock, const char *username, const char *isbn)
 
     if (copie_disponibili < 1){
         char response[128];
-        snprintf(response, sizeof(response), "il libro con isbn %s e' terminato", isbn);
+        snprintf(response, sizeof(response), "il libro e' terminato");
         send(sock, response, strlen(response), 0);
 
     } else {
         // Esegui la query 
-        char query1[BUFFER_SIZE];
         char start_date[11];  // Spazio per "YYYY-MM-DD" + terminatore null
         char delivery_date[11];  // Buffer per la data formattata
         get_delivery_date(delivery_date, sizeof(delivery_date));
@@ -639,30 +699,30 @@ void ordina_book(PGconn *conn, int sock, const char *username, const char *isbn)
 
         rem_to_bag(conn, sock, username, isbn);
 
+        char query1[BUFFER_SIZE];
+        snprintf(query1, sizeof(query1), "INSERT INTO loan (username, isbn, data_inizio, data_fine, stato) VALUES ('%s', '%s', '%s', '%s', 'attivo');", username, isbn, start_date, delivery_date);
+        PGresult *res1 = PQexec(conn, query1);
+
+        if (PQresultStatus(res1) != PGRES_COMMAND_OK) {
+            fprintf(stderr, "Errore durante la creazione del prestito: %s\n", PQerrorMessage(conn));
+        } else {
+            printf("Ordine effettuato con successo");
+        }
+
+        PQclear(res1);
+
+         // Aggiornare le copie prestate (+1)
         char query2[BUFFER_SIZE];
-        snprintf(query2, sizeof(query2), "INSERT INTO loan (username, isbn, data_inizio, data_fine, stato) VALUES ('%s', '%s', '%s', '%s', 'attivo');", username, isbn, start_date, delivery_date);
+        snprintf(query2, sizeof(query2), "UPDATE books SET copieprestate = copieprestate + 1 WHERE isbn = '%s';", isbn);
         PGresult *res2 = PQexec(conn, query2);
 
         if (PQresultStatus(res2) != PGRES_COMMAND_OK) {
-            fprintf(stderr, "Errore durante la creazione del prestito: %s\n", PQerrorMessage(conn));
-        } else {
-            printf("Inserito prestito del libro: %s per l'utente: %s \n", isbn, username);
-        }
-
-        PQclear(res2);
-
-         // Aggiornare le copie prestate (+1)
-        char query3[BUFFER_SIZE];
-        snprintf(query3, sizeof(query3), "UPDATE books SET copieprestate = copieprestate + 1 WHERE isbn = '%s';", isbn);
-        PGresult *res3 = PQexec(conn, query3);
-
-        if (PQresultStatus(res3) != PGRES_COMMAND_OK) {
             fprintf(stderr, "Errore durante l'aggiornamento di copieprestate: %s\n", PQerrorMessage(conn));
         } else {
             printf("Aggiornato copieprestate per il libro con isbn: %s\n", isbn);
         }
 
-        PQclear(res3);
+        PQclear(res2);
 
         char response[128];
         snprintf(response, sizeof(response), "Ordine avvenuto con successo!");
@@ -713,6 +773,90 @@ void num_prestiti(PGconn *conn, int sock, const char *username){
     PQclear(res);
 
 }
+
+//modificare numero massimo di prestiti possibili per utente
+void edit_max_prestiti(PGconn *conn, int sock, const char *max_prestiti){
+
+    int new_max_prestiti = atoi(max_prestiti);
+
+    // Controlla la connessione a PostgreSQL
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+        return;
+    }
+
+
+
+
+    // Prepara la query SQL per aggiornare lo stato del prestito
+    char query[BUFFER_SIZE];
+    snprintf(query, sizeof(query),
+             "UPDATE k "
+             "SET max_prestiti = %d;", new_max_prestiti);
+
+    // Esegui la query
+    PGresult *res = PQexec(conn, query);
+
+
+
+
+    // Controlla il risultato della query
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        fprintf(stderr, "UPDATE failed: %s", PQerrorMessage(conn));
+        PQclear(res);
+        return;
+    }
+
+    // Libera il risultato
+    PQclear(res);
+
+    // Invia un messaggio di successo al client
+    const char *msg = "Max prestiti aggiornato con successo.\n";
+    send(sock, msg, strlen(msg), 0);
+
+
+}
+
+//recuperare numero massimo di prestiti possibli per utente
+void get_max_prestiti(PGconn *conn, int sock){
+    // Connessione a PostgreSQL
+    if (PQstatus(conn) == CONNECTION_BAD) {
+        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+
+        return;
+    }
+
+        // Esegui la query 
+    char query[BUFFER_SIZE];
+    snprintf(query, sizeof(query), 
+    "SELECT max_prestiti "
+    "FROM k;");
+
+    PGresult *res = PQexec(conn, query);
+
+    if (PQresultStatus(res) == PGRES_TUPLES_OK) {
+        // Ottieni il numero di prestiti attivi
+        int num_max_prestiti = atoi(PQgetvalue(res, 0, 0));
+        printf("Numero max di prestiti per utente: %d\n", num_max_prestiti);
+
+        // Prepara la risposta da inviare al client
+        char response[256];
+        snprintf(response, sizeof(response), "%d", num_max_prestiti);
+
+        // Invia la risposta al client
+        send(sock, response, strlen(response), 0);
+    } else {
+        // In caso di errore nella query
+        fprintf(stderr, "Errore nell'esecuzione della query: %s\n", PQerrorMessage(conn));
+        send(sock, "Errore durante l'esecuzione della query", 41, 0);
+    }
+
+    PQclear(res);
+
+
+}
+
+
 
 //funzione per recuperare i libri dal carrello
 void books_from_bag(PGconn *conn, int sock, const char *username) {
@@ -779,7 +923,7 @@ void rem_to_bag(PGconn *conn, int sock, const char *username, const char *isbn){
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         fprintf(stderr, "Errore durante la rimozione dal database: %s\n", PQerrorMessage(conn));
     } else {
-        printf("Rimosso libro: %s per l'utente: %s\n", isbn, username);
+        printf("Rimosso libro dal carrello");
     }
 
     PQclear(res);
@@ -804,7 +948,7 @@ void add_to_bag(PGconn *conn, int sock, const char *username, const char *isbn){
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         fprintf(stderr, "Errore durante l'inserimento nel database: %s\n", PQerrorMessage(conn));
     } else {
-        printf("Aggiunto libro:%s  per l'utente: %s\n",isbn, username);
+        printf("Aggiunto libro al carrello");
     }
 
     PQclear(res);
@@ -1032,6 +1176,8 @@ void send_books_avaiable_from_db_genre(PGconn *conn, int sock, const char *genre
 
     PQclear(res);
 }
+
+
 
 //Funzione per richiedere tutti i libri
 void send_books_from_db(PGconn *conn, int sock) {
@@ -1285,6 +1431,7 @@ void *handle_client(void *socket_desc) {
         char *field1 = strtok(NULL, ":");
         char *field2 = strtok(NULL, ":");
 
+
         //Blocco registrazione e login
         
             if (strcmp(request_type, "register") == 0) {
@@ -1332,12 +1479,12 @@ void *handle_client(void *socket_desc) {
             } else if (strcmp(request_type, "aggiungialcarrello") == 0) {
                 //aggiunge libro al carrello utente
                 add_to_bag(conn, sock, field1, field2);
-                char *response = "Aggiunto libro:%s  per l'utente: %s\n",field1, field2;
+                char *response = "Aggiunto libro al carrello";
                 send(sock, response, strlen(response), 0);
             } else if (strcmp(request_type, "rimuovidalcarrello") == 0){
                 //aggiunge libro al carrello utente
                 rem_to_bag(conn, sock, field1, field2);
-                char *response = "Rimosso libro:%s  per l'utente: %s\n",field1, field2;
+                char *response = "Rimosso libro dal carrello";
                 send(sock, response, strlen(response), 0);
             } else if (strcmp(request_type, "bagbooks") == 0){
                 //recupera libri dal carrello dell'utente
@@ -1383,6 +1530,15 @@ void *handle_client(void *socket_desc) {
             } else if (strcmp(request_type, "userloansdelay") == 0){
                 //recupera i prestiti in ritardo di consegna
                 get_late_loans_by_user(conn, sock, field1);
+            } else if (strcmp(request_type, "checkavaiable") == 0){
+                //controlla se i libri nel carrello sono ancora disponibili
+                check_avaiable(conn, sock, field1);
+            } else if (strcmp(request_type, "getmaxprestiti") == 0){
+                //recupera numero massimo di prestiti
+                get_max_prestiti(conn, sock);
+            } else if (strcmp(request_type, "editmaxprestiti") == 0){
+                //modifica numero massimo di prestiti
+                edit_max_prestiti(conn, sock, field1);
             } else {
 
                 char *response = "Tipo di richiesta non valido.";
@@ -1435,34 +1591,8 @@ int start() {
         }
         PQclear(createTablesResult);
 
-        printf("Popolazione in corso...\n");
-/*const char *populateDBQuery1 = "INSERT INTO users (username, password) VALUES ('admin', 'admin');";
-const char *populateDBQuery2 = "INSERT INTO books (isbn, titolo, genere, imageUrl, autore, quantita, copieprestate) VALUES "
-    "('9788817154857', '1984', 'classico', 'https://covers.openlibrary.org/b/id/12054715-M.jpg', 'George Orwell', 5, 0), "
-    "('9780547928227', 'The Hobbit', 'fantasy', 'https://covers.openlibrary.org/b/id/14625529-M.jpg', 'J.R.R. Tolkien', 4, 0), "
-    "('9780140447934', 'War and Peace', 'classico', 'https://covers.openlibrary.org/b/id/14598041-M.jpg', 'Leo Tolstoy', 3, 0), "
-    "('9780307277671', 'The Da Vinci Code', 'fantasy', 'https://covers.openlibrary.org/b/id/14553572-M.jpg', 'Dan Brown', 6, 0), "
-    "('9788868360269', 'It', 'classico', 'https://covers.openlibrary.org/b/id/14656946-M.jpg', 'Stephen King', 4, 0), "
-    "('9780143105428', 'Pride and Prejudice', 'classico', 'https://covers.openlibrary.org/b/id/14619629-M.jpg', 'Jane Austen', 5, 0), "
-    "('9780307949486', 'The Girl with the Dragon Tattoo', 'fantasy', 'https://covers.openlibrary.org/b/id/6779579-M.jpg', 'Stieg Larsson', 5, 0), "
-    "('9798392253876', 'The Great Gatsby', 'classico', 'https://covers.openlibrary.org/b/id/8248481-M.jpg', 'F. Scott Fitzgerald', 6, 0), "
-    "('9788853019356', 'Treasure Island', 'storico', 'https://covers.openlibrary.org/b/id/12819540-M.jpg', 'Robert Louis Stevenson', 7, 0), "
-    "('9788806228644', 'Frankenstein', 'classico', 'https://covers.openlibrary.org/b/id/12991957-M.jpg', 'Mary Shelley', 4, 0);";
 
-                                           
-    PGresult *populateDBResult1 = PQexec(conn, populateDBQuery1);
-    if (PQresultStatus(populateDBResult1) != PGRES_COMMAND_OK) {
-        fprintf(stderr, "Errore durante l'inserimento utenti: %s\n", PQerrorMessage(conn));
-    }
-    PQclear(populateDBResult1);
 
-    PGresult *populateDBResult2 = PQexec(conn, populateDBQuery2);
-    if (PQresultStatus(populateDBResult2) != PGRES_COMMAND_OK) {
-        fprintf(stderr, "Errore durante l'inserimento libri: %s\n", PQerrorMessage(conn));
-    }
-    PQclear(populateDBResult2);
-
-    printf("Operazioni completate con successo.\n");*/
 
 
 }
@@ -1543,3 +1673,7 @@ int main() {
     start();
     return 0;
 } 
+
+
+
+
